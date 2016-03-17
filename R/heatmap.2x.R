@@ -185,11 +185,11 @@ function (x,
           ...)
 {
     scale01 <- function(x, low = min(x), high = max(x)) {
-      x <- (x - low)/(high - low)
-      x
+        x <- (x - low)/(high - low)
+        x
     }
     scale <- if (symm && missing(scale)) 
-      "none"
+        "none"
     else match.arg(scale)
     dendrogram <- match.arg(dendrogram)
     trace <- match.arg(trace)
@@ -335,9 +335,6 @@ function (x,
     lmat <- rbind(4:3, 2:1)
     lhei <- lwid <- c(keysize, 4)
     if (!missing(ColSideColors)) {
-#        if (!is.character(ColSideColors) || length(ColSideColors) != 
-#            nc) 
-#            stop("'ColSideColors' must be a character vector of length ncol(x)")
         if(is.null(nrow(ColSideColors))){
           lmat <- rbind(lmat[1, ] + 1, c(NA, 1), lmat[2, ] + 1)
           lhei <- c(lhei[1], 0.2, lhei[2])
@@ -346,25 +343,38 @@ function (x,
           lmat <- rbind(lmat[1, ] + nrow(ColSideColors),
                         t(matrix(as.numeric(unlist(strsplit(paste("NA",1:nrow(ColSideColors))," "))),2,nrow(ColSideColors))),
                         lmat[2, ] + nrow(ColSideColors))
-#          lhei <- c(lhei[1], 0.2*nrow(ColSideColors), lhei[2])
           lhei <- c(lhei[1], rep(0.2,nrow(ColSideColors)), lhei[2])
         } 
     }
     if (!missing(RowSideColors)) {
-        if (!is.character(RowSideColors) || length(RowSideColors) != 
-            nr) 
-            stop("'RowSideColors' must be a character vector of length nrow(x)")
-        lmat <- cbind(lmat[, 1] + 1, c(rep(NA, nrow(lmat) - 1), 
+        if(is.null(ncol(RowSideColors))){
+          lmat <- cbind(lmat[, 1] + 1, c(rep(NA, nrow(lmat) - 1), 
             1), lmat[, 2] + 1)
         lwid <- c(lwid[1], 0.2, lwid[2])
+        }
+        else{
+          lmat<- lmat+ncol(RowSideColors)
+          lmat<-cbind(lmat[,1], rbind(matrix(data=NA, (nrow(lmat)-1), ncol(RowSideColors)), 1:ncol(RowSideColors)),lmat[,2])
+          lwid <- c(lwid[1], rep(0.2,ncol(RowSideColors)), lwid[2])
+        } 
     }
     lmat[is.na(lmat)] <- 0
     op <- par(no.readonly = TRUE)
     on.exit(par(op))
     layout(lmat, widths = lwid, heights = lhei, respect = FALSE)
     if (!missing(RowSideColors)) {
+	if(is.null(nrow(ColSideColors))) {
         par(mar = c(margins[1], 0, 0, 0.5))
         image(rbind(1:nr), col = RowSideColors[rowInd], axes = FALSE)
+      }
+      else{
+        for(kk in 1:ncol(RowSideColors)){
+          par(mar = c(margins[1], 0, 0, 0.5))
+          image(rbind(1:nr), col = RowSideColors[rowInd,kk], axes = FALSE)
+          axis(1, 0, labels = colnames(RowSideColors)[kk], las = 2,
+               line = -0.5, tick = 0, cex.axis = cexRow)
+        }
+      } 
     }
     if (!missing(ColSideColors)) {
       if(is.null(nrow(ColSideColors))) {
