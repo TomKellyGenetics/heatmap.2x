@@ -170,6 +170,7 @@ function (x,
           cexRow = 0.2 + 1/log10(nr),
           cexCol = 0.2 + 1/log10(nc),
           labRow = NULL, labCol = NULL,
+          cexLab = 1,
           #srtRow = NULL, srtCol = NULL,
           #adjRow = c(0, NA), adjCol = c(NA, 0),
           #offsetRow = 0.5, offsetCol = 0.5,
@@ -413,11 +414,11 @@ function (x,
     axis(1, 1:nc, labels = labCol, las = 2, line = -0.5, tick = 0, 
         cex.axis = cexCol)
     if (!is.null(xlab)) 
-        mtext(xlab, side = 1, line = margins[1] - 1.25)
+        mtext(xlab, side = 1, line = margins[1] - 1.25, cex = cexLab)
     axis(4, iy, labels = labRow, las = 2, line = -0.5, tick = 0, 
         cex.axis = cexRow)
     if (!is.null(ylab)) 
-        mtext(ylab, side = 4, line = margins[2] - 1.25)
+        mtext(ylab, side = 4, line = margins[2] - 1.25, cex = cexLab)
     if (!missing(add.expr)) 
         eval(substitute(add.expr))
     if (!missing(colsep)) 
