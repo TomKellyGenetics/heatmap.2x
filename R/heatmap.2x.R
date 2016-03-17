@@ -1,8 +1,7 @@
 #' Enhanced Heat Map (with annotation matrices)
 #'
 #' A heat map is a false color image (basically \code{\link[graphics]{image}}(t(x))) with a dendrogram added to the left side and/or to the top. Typically, reordering of the rows and columns according to some set of values (row or column means) within the restrictions imposed by the dendrogram is carried out. This heatmap provides a number of extensions to the standard R \code{\link[stats]{heatmap}} and enhanced \code{\link[gplots]{heatmap.2}} function.
-#' @param love Do you love cats? Defaults to TRUE.
-#' @keywords cats
+#' @keywords heatmap visualization plot graphics
 #' @export
 #' @examples
 #' heatmap.2 (x,
@@ -164,7 +163,7 @@ function (x,
           na.color = par("bg"),
           trace = c("column", "row", "both", "none"), tracecol = "cyan",
           hline = median(breaks), vline = median(breaks),
-          linecol = tracecol,\
+          linecol = tracecol,
           margins = c(5, 5),
           ColSideColors, RowSideColors,
           cexRow = 0.2 + 1/log10(nr),
@@ -337,26 +336,41 @@ function (x,
     lhei <- lwid <- c(keysize, 4)
     if (!missing(ColSideColors)) {
         if(is.null(nrow(ColSideColors))){
-          lmat <- rbind(lmat[1, ] + 1, c(NA, 1), lmat[2, ] + 1)
-          lhei <- c(lhei[1], 0.2, lhei[2])
+          if(is.vector(ColSideColors)){
+              lmat <- rbind(lmat[1, ] + 1, c(NA, 1), lmat[2, ] + 1)
+              lhei <- c(lhei[1], 0.2, lhei[2])
+          } else {
+              warning("Note that ColSideColors must be a vector or a Matrix")
+          }
         }
         else{
-          lmat <- rbind(lmat[1, ] + nrow(ColSideColors),
-                        t(matrix(as.numeric(unlist(strsplit(paste("NA",1:nrow(ColSideColors))," "))),2,nrow(ColSideColors))),
-                        lmat[2, ] + nrow(ColSideColors))
-          lhei <- c(lhei[1], rep(0.2,nrow(ColSideColors)), lhei[2])
+          if(ncol(ColSideColors)==ncol(x)){
+              lmat <- rbind(lmat[1, ] + nrow(ColSideColors),
+                            t(matrix(as.numeric(unlist(strsplit(paste("NA",1:nrow(ColSideColors))," "))),2,nrow(ColSideColors))),
+                            lmat[2, ] + nrow(ColSideColors))
+              lhei <- c(lhei[1], rep(0.2,nrow(ColSideColors)), lhei[2])
+          } else {
+              warning("Note that if is a matrix ColSideColors it have the same number of **Columns** as the data matric being plotted")          
+          }
         } 
     }
     if (!missing(RowSideColors)) {
         if(is.null(ncol(RowSideColors))){
-          lmat <- cbind(lmat[, 1] + 1, c(rep(NA, nrow(lmat) - 1), 
-            1), lmat[, 2] + 1)
-        lwid <- c(lwid[1], 0.2, lwid[2])
+          if(is.vector(RowSideColors)){
+              lmat <- cbind(lmat[, 1] + 1, c(rep(NA, nrow(lmat) - 1), 1), lmat[, 2] + 1)
+              lwid <- c(lwid[1], 0.2, lwid[2])
+          } else {
+              warning("Note that RowSideColors must be a vector or a Matrix")
+          }
         }
         else{
-          lmat<- lmat+ncol(RowSideColors)
-          lmat<-cbind(lmat[,1], rbind(matrix(data=NA, (nrow(lmat)-1), ncol(RowSideColors)), 1:ncol(RowSideColors)),lmat[,2])
-          lwid <- c(lwid[1], rep(0.2,ncol(RowSideColors)), lwid[2])
+          if(nrow(RowSideColors)==nrow(x)){
+              lmat<- lmat+ncol(RowSideColors)
+              lmat<-cbind(lmat[,1], rbind(matrix(data=NA, (nrow(lmat)-1), ncol(RowSideColors)), 1:ncol(RowSideColors)),lmat[,2])
+              lwid <- c(lwid[1], rep(0.2,ncol(RowSideColors)), lwid[2])
+          } else {
+              warning("Note that if is a matrix RowSideColors it have the same number of **Rows** as the data matric being plotted")          
+          }
         } 
     }
     lmat[is.na(lmat)] <- 0
