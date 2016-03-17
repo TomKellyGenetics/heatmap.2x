@@ -1,3 +1,63 @@
+#' A Cat Function
+#'
+#' This function allows you to express your love of cats.
+#' @param love Do you love cats? Defaults to TRUE.
+#' @keywords cats
+#' @export
+#' @examples
+#' cat_function()
+#' 
+
+#' @param x	numeric matrix of the values to be plotted.
+#' @param Rowv determines if and how the row dendrogram should be reordered.	By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.
+#' @param Colv determines if and how the column dendrogram should be reordered.	Has the options as the Rowv argument above and additionally when x is a square matrix, Colv="Rowv" means that columns should be treated identically to the rows.
+#' @param distfun function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist.
+#' @param hclustfun function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to hclust.
+#' @param dendrogram character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.
+#' @param reorderfun function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}
+#' @param symm logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.
+#' @param scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".
+#' @param na.rm logical indicating whether NA's should be removed.
+#' @param revC logical indicating if the column order should be reversed for plotting, such that e.g., for the symmetric case, the symmetry axis is as usual.
+#' @param add.expr expression that will be evaluated after the call to image. Can be used to add components to the plot.
+#' @param breaks (optional) Either a numeric vector indicating the splitting points for binning x into colors, or a integer number of break points to be used, in which case the break points will be spaced equally between min(x) and max(x).
+#' @param symbreaks Boolean indicating whether breaks should be made symmetric about 0. Defaults to TRUE if the data includes negative values, and to FALSE otherwise.
+#' @param col	colors used for the image. Defaults to heat colors (heat.colors).
+#' @param colsep,rowsep,sepcolor (optional) vector of integers indicating which columns or rows should be separated from the preceding columns or rows by a narrow space of color sepcolor.
+#' @param sepwidth (optional) Vector of length 2 giving the width (colsep) or height (rowsep) the separator box drawn by colsep and rowsep as a function of the width (colsep) or height (rowsep) of a cell. Defaults to c(0.05, 0.05)
+#' @param cellnote (optional) matrix of character strings which will be placed within each color cell, e.g. p-value symbols.
+#' @param notecex (optional) numeric scaling factor for cellnote items.
+#' @param notecol (optional) character string specifying the color for cellnote text. Defaults to "cyan".
+#' @param na.color Color to use for missing value (NA). Defaults to the plot background color.
+#' @param trace character string indicating whether a solid "trace" line should be drawn across 'row's or down 'column's, 'both' or 'none'. The distance of the line from the center of each color-cell is proportional to the size of the measurement. Defaults to 'column'.
+#' @param tracecol character string giving the color for "trace" line. Defaults to "cyan".
+#' @param hline,vline,linecol Vector of values within cells where a horizontal or vertical dotted line should be drawn. The color of the line is controlled by linecol. Horizontal lines are only plotted if trace is 'row' or 'both'. Vertical lines are only drawn if trace 'column' or 'both'. hline and vline default to the median of the breaks, linecol defaults to the value of tracecol.
+#' @param margins numeric vector of length 2 containing the margins (see par(mar= *)) for column and row names, respectively.
+#' @param ColSideColors (optional) character vector of length ncol(x) containing the color names for a horizontal side bar that may be used to annotate the columns of x.
+#' @param RowSideColors (optional) character vector of length nrow(x) containing the color names for a vertical side bar that may be used to annotate the rows of x.
+#' @param cexRow,cexCol positive numbers, used as cex.axis in for the row or column axis labeling. The defaults currently only use number of rows or columns, respectively.
+#' @param labRow,labCol character vectors with row and column labels to use; these default to rownames(x) or colnames(x), respectively.
+#' @param srtRow,srtCol angle of row/column labels, in degrees from horizontal
+#' @param adjRow,adjCol 2-element vector giving the (left-right, top-bottom) justification of row/column labels (relative to the text orientation).
+#' @param offsetRow,offsetCol Number of character-width spaces to place between row/column labels and the edge of the plotting region.
+#' @param colRow,colCol color of row/column labels, either a scalar to set the color of all labels the same, or a vector providing the colors of each label item
+#' @param key logical indicating whether a color-key should be shown.
+#' @param keysize numeric value indicating the size of the key
+#' @param density.info character string indicating whether to superimpose a 'histogram', a 'density' plot, or no plot ('none') on the color-key.
+#' @param denscol character string giving the color for the density display specified by density.info, defaults to the same value as tracecol.
+#' @param symkey Boolean indicating whether the color key should be made symmetric about 0. Defaults to TRUE if the data includes negative values, and to FALSE otherwise.
+#' @param densadj Numeric scaling value for tuning the kernel width when a density plot is drawn on the color key. (See the adjust parameter for the density function for details.) Defaults to 0.25.
+#' @param key.title main title of the color key. If set to NA no title will be plotted.
+#' @param key.xlab x axis label of the color key. If set to NA no label will be plotted.
+#' @param key.ylab y axis label of the color key. If set to NA no label will be plotted.
+#' @param key.xtickfun function computing tick location and labels for the xaxis of the color key. Returns a named list containing parameters that can be passed to axis. See examples.
+#' @param key.ytickfun function computing tick location and labels for the y axis of the color key. Returns a named list containing parameters that can be passed to axis. See examples.
+#' @param key.par graphical parameters for the color key. Named list that can be passed to par.
+#' @param main,xlab,ylab main, x- and y-axis titles; defaults to none.
+#' @param lmat,lhei,lwid visual layout: position matrix, column height, column width. See below for details
+#' @param extrafun A function to be called after all other work. See examples.
+#' @param ... additional arguments passed on to image
+
 heatmap.2x <-
 function (x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE, 
     distfun = dist, hclustfun = hclust, dendrogram = c("both", 
