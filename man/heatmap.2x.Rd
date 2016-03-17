@@ -2,7 +2,7 @@
 % Please edit documentation in R/heatmap.2x.R
 \name{heatmap.2x}
 \alias{heatmap.2x}
-\title{A Cat Function}
+\title{Enhanced Heat Map (with annotation matrices)}
 \usage{
 heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
@@ -130,7 +130,96 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 A heat map is a false color image (basically \code{\link[graphics]{image}}(t(x))) with a dendrogram added to the left side and/or to the top. Typically, reordering of the rows and columns according to some set of values (row or column means) within the restrictions imposed by the dendrogram is carried out. This heatmap provides a number of extensions to the standard R \code{\link[stats]{heatmap}} and enhanced \code{\link[gplots]{heatmap.2}} function.
 }
 \examples{
-cat_function()
+heatmap.2 (x,
+
+# dendrogram control
+Rowv = TRUE,
+Colv=if(symm)"Rowv" else TRUE,
+distfun = dist,
+hclustfun = hclust,
+dendrogram = c("both","row","column","none"),
+reorderfun = function(d, w) reorder(d, w),
+symm = FALSE,
+
+# data scaling
+scale = c("none","row", "column"),
+na.rm=TRUE,
+
+# image plot
+revC = identical(Colv, "Rowv"),
+add.expr,
+
+# mapping data to colors
+breaks,
+symbreaks=any(x < 0, na.rm=TRUE) || scale!="none",
+
+# colors
+col="heat.colors",
+
+# block sepration
+colsep,
+rowsep,
+sepcolor="white",
+sepwidth=c(0.05,0.05),
+
+# cell labeling
+cellnote,
+notecex=1.0,
+notecol="cyan",
+na.color=par("bg"),
+
+# level trace
+trace=c("column","row","both","none"),
+tracecol="cyan",
+hline=median(breaks),
+vline=median(breaks),
+linecol=tracecol,
+
+# Row/Column Labeling
+margins = c(5, 5),
+ColSideColors,
+RowSideColors,
+cexRow = 0.2 + 1/log10(nr),
+cexCol = 0.2 + 1/log10(nc),
+labRow = NULL,
+labCol = NULL,
+srtRow = NULL,
+srtCol = NULL,
+adjRow = c(0,NA),
+adjCol = c(NA,0),
+offsetRow = 0.5,
+offsetCol = 0.5,
+colRow = NULL,
+colCol = NULL,
+
+# color key + density info
+key = TRUE,
+keysize = 1.5,
+density.info=c("histogram","density","none"),
+denscol=tracecol,
+symkey = any(x < 0, na.rm=TRUE) || symbreaks,
+densadj = 0.25,
+key.title = NULL,
+key.xlab = NULL,
+key.ylab = NULL,
+key.xtickfun = NULL,
+key.ytickfun = NULL,
+key.par=list(),
+
+# plot labels
+main = NULL,
+xlab = NULL,
+ylab = NULL,
+
+# plot layout
+lmat = NULL,
+lhei = NULL,
+lwid = NULL,
+
+# extras
+extrafun=NULL,
+...
+)
 
 }
 \keyword{cats}
