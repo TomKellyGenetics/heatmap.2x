@@ -120,10 +120,11 @@
 #' @param tracecol character string giving the color for "trace" line. Defaults to "cyan".
 #' @param hline,vline,linecol Vector of values within cells where a horizontal or vertical dotted line should be drawn. The color of the line is controlled by linecol. Horizontal lines are only plotted if trace is 'row' or 'both'. Vertical lines are only drawn if trace 'column' or 'both'. hline and vline default to the median of the breaks, linecol defaults to the value of tracecol.
 #' @param margins numeric vector of length 2 containing the margins (see \code{\link[graphics]{par}}(mar= *)) for column and row names, respectively.
-#' @param ColSideColors (optional) character vector of length ncol(x) containing the color names for a horizontal side bar that may be used to annotate the columns of x.
-#' @param RowSideColors (optional) character vector of length nrow(x) containing the color names for a vertical side bar that may be used to annotate the rows of x.
+#' @param ColSideColors (optional) character vector of length ncol(x) containing the color names for a horizontal side bar that may be used to annotate the columns of x. Enabled multiple colorbars combined with rbind: matrix where ncol(ColSideColors)=ncol(x), nrow(ColSideColors) is the number of annotation colour bars, and rownames(ColSideColors) are labels.
+#' @param RowSideColors (optional) character vector of length nrow(x) containing the color names for a vertical side bar that may be used to annotate the rows of x. Enabled multiple colorbars combined with cbind: matrix where ncol(RowSideColors)is the number of annotation colour bars, nrow(RowSideColors)=nrow(x), and colnames(RowSideColors) are labels.
 #' @param cexRow,cexCol positive numbers, used as cex.axis in for the row or column axis labeling. The defaults currently only use number of rows or columns, respectively.
 #' @param labRow,labCol character vectors with row and column labels to use; these default to rownames(x) or colnames(x), respectively.
+#' @param cexLab positive numbers, used as cex.axis in for the row or column annotation bar labeling. Relative to size of row or column labels respectively.
 #' @param srtRow,srtCol angle of row/column labels, in degrees from horizontal
 #' @param adjRow,adjCol 2-element vector giving the (left-right, top-bottom) justification of row/column labels (relative to the text orientation).
 #' @param offsetRow,offsetCol Number of character-width spaces to place between row/column labels and the edge of the plotting region.
