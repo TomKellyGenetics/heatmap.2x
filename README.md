@@ -1,5 +1,8 @@
-Enhanced Heatmap
+Enhanced Heatmap: Suppressed dendrogram reordering
 ===================
+Note that this is the `supr` branch. This branch is only recommended for handling large pre-generated dendrograms, much of this functionality is possible in the `test` version.
+
+
 
 Altered version of heatmap.2 by Mik Black and Tom Kelly at the University of Otago
 
@@ -27,20 +30,6 @@ To get the current released version from CRAN:
 
 ```R
 install.packages("gplots")
-```
-
-To get the modified version from github:
-
-```R
-# install.packages("devtools")
-devtools::install_github("TomKellyGenetics/heatmap.2x", ref="master")
-```
-
-To get the modified version from github (with various functions of heatmap.2 restored):
-
-```R
-# install.packages("devtools")
-devtools::install_github("TomKellyGenetics/heatmap.2x", ref="test")
 ```
 
 To get the modified version from github (with dendrogram ordering supression):
