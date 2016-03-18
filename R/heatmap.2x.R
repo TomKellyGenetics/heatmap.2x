@@ -180,7 +180,7 @@ function (x,
           density.info = c("histogram", "density", "none"), denscol = tracecol,
           symkey = any(x < 0, na.rm = TRUE) || symbreaks,
           densadj = 0.25,
-          #key.title = NULL, key.xlab = NULL, key.ylab = NULL, key.xtickfun = NULL, key.ytickfun = NULL, key.par = list(),
+          key.title = NULL, key.xlab = NULL, key.ylab = NULL, key.xtickfun = NULL, key.ytickfun = NULL, key.par = list(),
           main = NULL, xlab = NULL, ylab = NULL,
           lmat = NULL, lhei = NULL, lwid = NULL, extrafun = NULL,
           ...)
@@ -528,54 +528,123 @@ function (x,
     if (!is.null(main)) 
         title(main, cex.main = 1.5 * op[["cex.main"]])
     if (key) {
-        par(mar = c(5, 4, 2, 1), cex = 0.75)
-        if (symkey) {
-            max.raw <- max(abs(x), na.rm = TRUE)
-            min.raw <- -max.raw
-        }
-        else {
-            min.raw <- min(x, na.rm = TRUE)
-            max.raw <- max(x, na.rm = TRUE)
-        }
-        z <- seq(min.raw, max.raw, length = length(col))
-        image(z = matrix(z, ncol = 1), col = col, breaks = breaks, 
-            xaxt = "n", yaxt = "n")
-        par(usr = c(0, 1, 0, 1))
-        lv <- pretty(breaks)
-        xv <- scale01(as.numeric(lv), min.raw, max.raw)
-        axis(1, at = xv, labels = lv)
-        if (scale == "row") 
-            mtext(side = 1, "Row Z-Score", line = 2)
-        else if (scale == "column") 
-            mtext(side = 1, "Column Z-Score", line = 2)
-        else mtext(side = 1, "Value", line = 2)
-        if (density.info == "density") {
-            dens <- density(x, adjust = densadj, na.rm = TRUE)
-            omit <- dens$x < min(breaks) | dens$x > max(breaks)
-            dens$x <- dens$x[-omit]
-            dens$y <- dens$y[-omit]
-            dens$x <- scale01(dens$x, min.raw, max.raw)
-            lines(dens$x, dens$y/max(dens$y) * 0.95, col = denscol, 
-                lwd = 1)
-            axis(2, at = pretty(dens$y)/max(dens$y) * 0.95, pretty(dens$y))
-            title("Color Key\nand Density Plot")
-            par(cex = 0.5)
-            mtext(side = 2, "Density", line = 2)
-        }
-        else if (density.info == "histogram") {
-            h <- hist(x, plot = FALSE, breaks = breaks)
-            hx <- scale01(breaks, min.raw, max.raw)
-            hy <- c(h$counts, h$counts[length(h$counts)])
-            lines(hx, hy/max(hy) * 0.95, lwd = 1, type = "s", 
-                col = denscol)
-            axis(2, at = pretty(hy)/max(hy) * 0.95, pretty(hy))
-            title("Color Key\nand Histogram")
-            par(cex = 0.5)
-            mtext(side = 2, "Count", line = 2)
-        }
-        else title("Color Key")
+    mar <- c(5, 4, 2, 1)
+    if (!is.null(key.xlab) && is.na(key.xlab)) 
+      mar[1] <- 2
+    if (!is.null(key.ylab) && is.na(key.ylab)) 
+      mar[2] <- 2
+    if (!is.null(key.title) && is.na(key.title)) 
+      mar[3] <- 1
+    par(mar = mar, cex = 0.75, mgp = c(2, 1, 0))
+    if (length(key.par) > 0) 
+      do.call(par, key.par)
+    tmpbreaks <- breaks
+    if (symkey) {
+      max.raw <- max(abs(c(x, breaks)), na.rm = TRUE)
+      min.raw <- -max.raw
+      tmpbreaks[1] <- -max(abs(x), na.rm = TRUE)
+      tmpbreaks[length(tmpbreaks)] <- max(abs(x), na.rm = TRUE)
     }
-    else plot.new()
+    else {
+      min.raw <- min.breaks
+      max.raw <- max.breaks
+    }
+    z <- seq(min.raw, max.raw, by = min(diff(breaks)/4))
+    image(z = matrix(z, ncol = 1), col = col, breaks = tmpbreaks, 
+          xaxt = "n", yaxt = "n")
+    par(usr = c(0, 1, 0, 1))
+    if (is.null(key.xtickfun)) {
+      lv <- pretty(breaks)
+      xv <- scale01(as.numeric(lv), min.raw, max.raw)
+      xargs <- list(at = xv, labels = lv)
+    }
+    else {
+      xargs <- key.xtickfun()
+    }
+    xargs$side <- 1
+    do.call(axis, xargs)
+    if (is.null(key.xlab)) {
+      if (scale == "row") 
+        key.xlab <- "Row Z-Score"
+      else if (scale == "column") 
+        key.xlab <- "Column Z-Score"
+      else key.xlab <- "Value"
+    }
+    if (!is.na(key.xlab)) {
+      mtext(side = 1, key.xlab, line = par("mgp")[1], padj = 0.5, 
+            cex = par("cex") * par("cex.lab"))
+    }
+    if (density.info == "density") {
+      dens <- density(x, adjust = densadj, na.rm = TRUE, 
+                      from = min.scale, to = max.scale)
+      omit <- dens$x < min(breaks) | dens$x > max(breaks)
+      dens$x <- dens$x[!omit]
+      dens$y <- dens$y[!omit]
+      dens$x <- scale01(dens$x, min.raw, max.raw)
+      lines(dens$x, dens$y/max(dens$y) * 0.95, col = denscol, 
+            lwd = 1)
+      if (is.null(key.ytickfun)) {
+        yargs <- list(at = pretty(dens$y)/max(dens$y) * 
+                        0.95, labels = pretty(dens$y))
+      }
+      else {
+        yargs <- key.ytickfun()
+      }
+      yargs$side <- 2
+      do.call(axis, yargs)
+      if (is.null(key.title)) 
+        key.title <- "Color Key\nand Density Plot"
+      if (!is.na(key.title)) 
+        title(key.title)
+      par(cex = 0.5)
+      if (is.null(key.ylab)) 
+        key.ylab <- "Density"
+      if (!is.na(key.ylab)) 
+        mtext(side = 2, key.ylab, line = par("mgp")[1], 
+              padj = 0.5, cex = par("cex") * par("cex.lab"))
+    }
+    else if (density.info == "histogram") {
+      h <- hist(x, plot = FALSE, breaks = breaks)
+      hx <- scale01(breaks, min.raw, max.raw)
+      hy <- c(h$counts, h$counts[length(h$counts)])
+      lines(hx, hy/max(hy) * 0.95, lwd = 1, type = "s", 
+            col = denscol)
+      if (is.null(key.ytickfun)) {
+        yargs <- list(at = pretty(hy)/max(hy) * 0.95, 
+                      labels = pretty(hy))
+      }
+      else {
+        yargs <- key.ytickfun()
+      }
+      yargs$side <- 2
+      do.call(axis, yargs)
+      if (is.null(key.title)) 
+        key.title <- "Color Key\nand Histogram"
+      if (!is.na(key.title)) 
+        title(key.title)
+      par(cex = 0.5)
+      if (is.null(key.ylab)) 
+        key.ylab <- "Count"
+      if (!is.na(key.ylab)) 
+        mtext(side = 2, key.ylab, line = par("mgp")[1], 
+              padj = 0.5, cex = par("cex") * par("cex.lab"))
+    }
+    else if (is.null(key.title)) 
+      title("Color Key")
+    if (trace %in% c("both", "column")) {
+      vline.vals <- scale01(vline, min.raw, max.raw)
+      if (!is.null(vline)) {
+        abline(v = vline.vals, col = linecol, lty = 2)
+      }
+    }
+    if (trace %in% c("both", "row")) {
+      hline.vals <- scale01(hline, min.raw, max.raw)
+      if (!is.null(hline)) {
+        abline(v = hline.vals, col = linecol, lty = 2)
+      }
+    }
+  }
+  else plot.new()
     invisible(list(rowInd = rowInd, colInd = colInd))
       if (!is.null(extrafun)){ 
         extrafun()
