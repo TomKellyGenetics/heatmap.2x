@@ -1,4 +1,4 @@
-Enhanced Heatmap
+Enhanced Heatmap: testing additional functionality
 ===================
 This is the `test` branch. This branch is only recommended if additional functionality is need from the `master` version. Restores many functions of `gplots::heatmap.2`.
 
