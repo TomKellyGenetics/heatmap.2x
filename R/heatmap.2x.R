@@ -321,8 +321,12 @@ function (x,
             breaks <- 16
         else breaks <- length(col) + 1
     if (length(breaks) == 1) {
-        breaks <- seq(min(x, na.rm = na.rm), max(x, na.rm = na.rm), 
-            length = breaks)
+      if (!symbreaks){
+        breaks <- seq(min(x, na.rm = na.rm), max(x, na.rm = na.rm), length = breaks)
+      } else {
+        extreme <- max(abs(x), na.rm = TRUE)
+        breaks <- seq(-extreme, extreme, length = breaks)
+      }
     }
     nbr <- length(breaks)
     ncol <- length(breaks) - 1
