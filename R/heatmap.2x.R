@@ -170,8 +170,8 @@ function (x,
           cexRow = 0.2 + 1/log10(nr),
           cexCol = 0.2 + 1/log10(nc),
           labRow = NULL, labCol = NULL,
-          #srtRow = NULL, srtCol = NULL,
-          #adjRow = c(0, NA), adjCol = c(NA, 0),
+          srtRow = NULL, srtCol = NULL,
+          adjRow = c(0, NA), adjCol = c(NA, 0),
           #offsetRow = 0.5, offsetCol = 0.5,
           #colRow = NULL, colCol = NULL,
           key = TRUE, keysize = 1.5,
@@ -335,9 +335,6 @@ function (x,
     lmat <- rbind(4:3, 2:1)
     lhei <- lwid <- c(keysize, 4)
     if (!missing(ColSideColors)) {
-#        if (!is.character(ColSideColors) || length(ColSideColors) != 
-#            nc) 
-#            stop("'ColSideColors' must be a character vector of length ncol(x)")
         if(is.null(nrow(ColSideColors))){
           lmat <- rbind(lmat[1, ] + 1, c(NA, 1), lmat[2, ] + 1)
           lhei <- c(lhei[1], 0.2, lhei[2])
@@ -346,7 +343,6 @@ function (x,
           lmat <- rbind(lmat[1, ] + nrow(ColSideColors),
                         t(matrix(as.numeric(unlist(strsplit(paste("NA",1:nrow(ColSideColors))," "))),2,nrow(ColSideColors))),
                         lmat[2, ] + nrow(ColSideColors))
-#          lhei <- c(lhei[1], 0.2*nrow(ColSideColors), lhei[2])
           lhei <- c(lhei[1], rep(0.2,nrow(ColSideColors)), lhei[2])
         } 
     }
@@ -400,12 +396,45 @@ function (x,
         image(1:nc, 1:nr, mmat, axes = FALSE, xlab = "", ylab = "", 
             col = na.color, add = TRUE)
     }
-    axis(1, 1:nc, labels = labCol, las = 2, line = -0.5, tick = 0, 
-        cex.axis = cexCol)
+    if (is.null(srtCol) && is.null(colCol)) 
+        axis(1, 1:nc, labels = labCol, las = 2, line = -0.5 + 
+           offsetCol, tick = 0, cex.axis = cexCol, hadj = adjCol[1], 
+         padj = adjCol[2])
+      else {
+        if (is.null(srtCol) || is.numeric(srtCol)) {
+          if (missing(adjCol) || is.null(adjCol)) 
+        adjCol = c(1, NA)
+          xpd.orig <- par("xpd")
+          par(xpd = NA)
+          xpos <- axis(1, 1:nc, labels = rep("", nc), las = 2, 
+                   tick = 0)
+          text(x = xpos, y = par("usr")[3] - (1 + offsetCol) * 
+             strheight("M"), labels = labCol, adj = adjCol, 
+           cex = cexCol, srt = srtCol, col = colCol)
+          print(colCol)
+          par(xpd = xpd.orig)
+        }
+        else warning("Invalid value for srtCol ignored.")
+      }
+      if (is.null(srtRow) && is.null(colRow)) {
+        axis(4, iy, labels = labRow, las = 2, line = -0.5 + offsetRow, 
+         tick = 0, cex.axis = cexRow, hadj = adjRow[1], padj = adjRow[2])
+      }
+      else {
+        if (is.null(srtRow) || is.numeric(srtRow)) {
+          xpd.orig <- par("xpd")
+          par(xpd = NA)
+          ypos <- axis(4, iy, labels = rep("", nr), las = 2, 
+                   line = -0.5, tick = 0)
+          text(x = par("usr")[2] + (1 + offsetRow) * strwidth("M"), 
+           y = ypos, labels = labRow, adj = adjRow, cex = cexRow, 
+           srt = srtRow, col = colRow)
+          par(xpd = xpd.orig)
+        }
+        else warning("Invalid value for srtRow ignored.")
+      }
     if (!is.null(xlab)) 
         mtext(xlab, side = 1, line = margins[1] - 1.25)
-    axis(4, iy, labels = labRow, las = 2, line = -0.5, tick = 0, 
-        cex.axis = cexRow)
     if (!is.null(ylab)) 
         mtext(ylab, side = 4, line = margins[2] - 1.25)
     if (!missing(add.expr)) 
