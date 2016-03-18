@@ -1,8 +1,7 @@
 #' Enhanced Heat Map (with annotation matrices)
 #'
 #' A heat map is a false color image (basically \code{\link[graphics]{image}}(t(x))) with a dendrogram added to the left side and/or to the top. Typically, reordering of the rows and columns according to some set of values (row or column means) within the restrictions imposed by the dendrogram is carried out. This heatmap provides a number of extensions to the standard R \code{\link[stats]{heatmap}} and enhanced \code{\link[gplots]{heatmap.2}} function.
-#' @param love Do you love cats? Defaults to TRUE.
-#' @keywords cats
+#' @keywords heatmap visualization plot graphics
 #' @export
 #' @examples
 #' heatmap.2 (x,
@@ -121,16 +120,18 @@
 #' @param tracecol character string giving the color for "trace" line. Defaults to "cyan".
 #' @param hline,vline,linecol Vector of values within cells where a horizontal or vertical dotted line should be drawn. The color of the line is controlled by linecol. Horizontal lines are only plotted if trace is 'row' or 'both'. Vertical lines are only drawn if trace 'column' or 'both'. hline and vline default to the median of the breaks, linecol defaults to the value of tracecol.
 #' @param margins numeric vector of length 2 containing the margins (see \code{\link[graphics]{par}}(mar= *)) for column and row names, respectively.
-#' @param ColSideColors (optional) character vector of length ncol(x) containing the color names for a horizontal side bar that may be used to annotate the columns of x.
-#' @param RowSideColors (optional) character vector of length nrow(x) containing the color names for a vertical side bar that may be used to annotate the rows of x.
+#' @param ColSideColors (optional) character vector of length ncol(x) containing the color names for a horizontal side bar that may be used to annotate the columns of x. Enabled multiple colorbars combined with rbind: matrix where ncol(ColSideColors)=ncol(x), nrow(ColSideColors) is the number of annotation colour bars, and rownames(ColSideColors) are labels.
+#' @param RowSideColors (optional) character vector of length nrow(x) containing the color names for a vertical side bar that may be used to annotate the rows of x. Enabled multiple colorbars combined with cbind: matrix where ncol(RowSideColors)is the number of annotation colour bars, nrow(RowSideColors)=nrow(x), and colnames(RowSideColors) are labels.
 #' @param cexRow,cexCol positive numbers, used as cex.axis in for the row or column axis labeling. The defaults currently only use number of rows or columns, respectively.
 #' @param labRow,labCol character vectors with row and column labels to use; these default to rownames(x) or colnames(x), respectively.
+#' @param cexLab positive numbers, used as cex.axis in for the row or column annotation bar labeling. Relative to size of row or column labels respectively.
 #' @param srtRow,srtCol angle of row/column labels, in degrees from horizontal
 #' @param adjRow,adjCol 2-element vector giving the (left-right, top-bottom) justification of row/column labels (relative to the text orientation).
 #' @param offsetRow,offsetCol Number of character-width spaces to place between row/column labels and the edge of the plotting region.
 #' @param colRow,colCol color of row/column labels, either a scalar to set the color of all labels the same, or a vector providing the colors of each label item
 #' @param key logical indicating whether a color-key should be shown.
 #' @param keysize numeric value indicating the size of the key
+#' @param colbarsize numeric value indicating the size of the column bars (relative to default size in \code{\link[gplots]{heatmap.2}})
 #' @param density.info character string indicating whether to superimpose a 'histogram', a 'density' plot, or no plot ('none') on the color-key.
 #' @param denscol character string giving the color for the density display specified by density.info, defaults to the same value as tracecol.
 #' @param symkey Boolean indicating whether the color key should be made symmetric about 0. Defaults to TRUE if the data includes negative values, and to FALSE otherwise.
@@ -151,45 +152,45 @@ function (x,
           distfun = dist,
           hclustfun = hclust,
           dendrogram = c("both", "row", "column", "none"),
-          #reorderfun = function(d, w) reorder(d, w),
+          reorderfun = function(d, w) reorder(d, w),
           symm = FALSE,
           scale = c("none", "row", "column"),
           na.rm = TRUE,
           revC = identical(Colv, "Rowv"),
           add.expr,
           breaks,
-          #symbreaks = any(x < 0, na.rm = TRUE) || scale != "none",
+          symbreaks = any(x < 0, na.rm = TRUE) || scale != "none",
           col = "bluered", colsep, rowsep, sepcolor = "white", sepwidth = c(0.05, 0.05),
           cellnote, notecex = 1, notecol = "cyan",
           na.color = par("bg"),
           trace = c("column", "row", "both", "none"), tracecol = "cyan",
           hline = median(breaks), vline = median(breaks),
-          linecol = tracecol,\
+          linecol = tracecol,
           margins = c(5, 5),
           ColSideColors, RowSideColors,
           cexRow = 0.2 + 1/log10(nr),
           cexCol = 0.2 + 1/log10(nc),
           labRow = NULL, labCol = NULL,
-          #srtRow = NULL, srtCol = NULL,
-          #adjRow = c(0, NA), adjCol = c(NA, 0),
-          #offsetRow = 0.5, offsetCol = 0.5,
-          #colRow = NULL, colCol = NULL,
-          key = TRUE, keysize = 1.5,
+          srtRow = NULL, srtCol = NULL,
+          adjRow = c(0, NA), adjCol = c(NA, 0),
+          cexLab = 1,
+          offsetRow = 0.5, offsetCol = 0.5,
+          colRow = NULL, colCol = NULL,
+          key = TRUE, keysize = 1.5, colbarsize = 1,
           density.info = c("histogram", "density", "none"), denscol = tracecol,
-          symkey = min(x < 0, na.rm = TRUE),
-          #symkey = any(x < 0, na.rm = TRUE) || symbreaks,
+          symkey = any(x < 0, na.rm = TRUE) || symbreaks,
           densadj = 0.25,
-          #key.title = NULL, key.xlab = NULL, key.ylab = NULL, key.xtickfun = NULL, key.ytickfun = NULL, key.par = list(),
+          key.title = NULL, key.xlab = NULL, key.ylab = NULL, key.xtickfun = NULL, key.ytickfun = NULL, key.par = list(),
           main = NULL, xlab = NULL, ylab = NULL,
-          #lmat = NULL, lhei = NULL, lwid = NULL, extrafun = NULL,
+          lmat = NULL, lhei = NULL, lwid = NULL, extrafun = NULL,
           ...)
 {
     scale01 <- function(x, low = min(x), high = max(x)) {
-      x <- (x - low)/(high - low)
-      x
+        x <- (x - low)/(high - low)
+        x
     }
     scale <- if (symm && missing(scale)) 
-      "none"
+        "none"
     else match.arg(scale)
     dendrogram <- match.arg(dendrogram)
     trace <- match.arg(trace)
@@ -236,7 +237,7 @@ function (x,
     else if (is.integer(Rowv)) {
         hcr <- hclustfun(distfun(x))
         ddr <- as.dendrogram(hcr)
-        ddr <- reorder(ddr, Rowv)
+        ddr <- reorderfun(ddr, Rowv)
         rowInd <- order.dendrogram(ddr)
         if (nr != length(rowInd)) 
             stop("row dendrogram ordering gave index of wrong length")
@@ -245,7 +246,7 @@ function (x,
         Rowv <- rowMeans(x, na.rm = na.rm)
         hcr <- hclustfun(distfun(x))
         ddr <- as.dendrogram(hcr)
-        ddr <- reorder(ddr, Rowv)
+        ddr <- reorderfun(ddr, Rowv)
         rowInd <- order.dendrogram(ddr)
         if (nr != length(rowInd)) 
             stop("row dendrogram ordering gave index of wrong length")
@@ -271,7 +272,7 @@ function (x,
             x
         else t(x)))
         ddc <- as.dendrogram(hcc)
-        ddc <- reorder(ddc, Colv)
+        ddc <- reorderfun(ddc, Colv)
         colInd <- order.dendrogram(ddc)
         if (nc != length(colInd)) 
             stop("column dendrogram ordering gave index of wrong length")
@@ -282,7 +283,7 @@ function (x,
             x
         else t(x)))
         ddc <- as.dendrogram(hcc)
-        ddc <- reorder(ddc, Colv)
+        ddc <- reorderfun(ddc, Colv)
         colInd <- order.dendrogram(ddc)
         if (nc != length(colInd)) 
             stop("column dendrogram ordering gave index of wrong length")
@@ -319,8 +320,12 @@ function (x,
             breaks <- 16
         else breaks <- length(col) + 1
     if (length(breaks) == 1) {
-        breaks <- seq(min(x, na.rm = na.rm), max(x, na.rm = na.rm), 
-            length = breaks)
+      if (!symbreaks){
+        breaks <- seq(min(x, na.rm = na.rm), max(x, na.rm = na.rm), length = breaks)
+      } else {
+        extreme <- max(abs(x), na.rm = TRUE)
+        breaks <- seq(-extreme, extreme, length = breaks)
+      }
     }
     nbr <- length(breaks)
     ncol <- length(breaks) - 1
@@ -334,37 +339,63 @@ function (x,
     x[] <- ifelse(x > max.breaks, max.breaks, x)
     lmat <- rbind(4:3, 2:1)
     lhei <- lwid <- c(keysize, 4)
+    colbarsize <-  colbarsize / 5
     if (!missing(ColSideColors)) {
-#        if (!is.character(ColSideColors) || length(ColSideColors) != 
-#            nc) 
-#            stop("'ColSideColors' must be a character vector of length ncol(x)")
         if(is.null(nrow(ColSideColors))){
-          lmat <- rbind(lmat[1, ] + 1, c(NA, 1), lmat[2, ] + 1)
-          lhei <- c(lhei[1], 0.2, lhei[2])
+          if(is.vector(ColSideColors)){
+              lmat <- rbind(lmat[1, ] + 1, c(NA, 1), lmat[2, ] + 1)
+              lhei <- c(lhei[1], colbarsize, lhei[2])
+          } else {
+              warning("Note that ColSideColors must be a vector or a Matrix")
+          }
         }
         else{
-          lmat <- rbind(lmat[1, ] + nrow(ColSideColors),
-                        t(matrix(as.numeric(unlist(strsplit(paste("NA",1:nrow(ColSideColors))," "))),2,nrow(ColSideColors))),
-                        lmat[2, ] + nrow(ColSideColors))
-#          lhei <- c(lhei[1], 0.2*nrow(ColSideColors), lhei[2])
-          lhei <- c(lhei[1], rep(0.2,nrow(ColSideColors)), lhei[2])
+          if(ncol(ColSideColors)==ncol(x)){
+              lmat <- rbind(lmat[1, ] + nrow(ColSideColors),
+                            t(matrix(as.numeric(unlist(strsplit(paste("NA",1:nrow(ColSideColors))," "))),2,nrow(ColSideColors))),
+                            lmat[2, ] + nrow(ColSideColors))
+              lhei <- c(lhei[1], rep(colbarsize,nrow(ColSideColors)), lhei[2])
+          } else {
+              warning("Note that if is a matrix ColSideColors it have the same number of **Columns** as the data matric being plotted")          
+          }
         } 
     }
     if (!missing(RowSideColors)) {
-        if (!is.character(RowSideColors) || length(RowSideColors) != 
-            nr) 
-            stop("'RowSideColors' must be a character vector of length nrow(x)")
-        lmat <- cbind(lmat[, 1] + 1, c(rep(NA, nrow(lmat) - 1), 
-            1), lmat[, 2] + 1)
-        lwid <- c(lwid[1], 0.2, lwid[2])
+        if(is.null(ncol(RowSideColors))){
+          if(is.vector(RowSideColors)){
+              lmat <- cbind(lmat[, 1] + 1, c(rep(NA, nrow(lmat) - 1), 1), lmat[, 2] + 1)
+              lwid <- c(lwid[1], colbarsize, lwid[2])
+          } else {
+              warning("Note that RowSideColors must be a vector or a Matrix")
+          }
+        }
+        else{
+          if(nrow(RowSideColors)==nrow(x)){
+              lmat<- lmat+ncol(RowSideColors)
+              lmat<-cbind(lmat[,1], rbind(matrix(data=NA, (nrow(lmat)-1), ncol(RowSideColors)), 1:ncol(RowSideColors)),lmat[,2])
+              lwid <- c(lwid[1], rep(colbarsize,ncol(RowSideColors)), lwid[2])
+          } else {
+              warning("Note that if is a matrix RowSideColors it have the same number of **Rows** as the data matric being plotted")          
+          }
+        } 
     }
     lmat[is.na(lmat)] <- 0
     op <- par(no.readonly = TRUE)
     on.exit(par(op))
     layout(lmat, widths = lwid, heights = lhei, respect = FALSE)
     if (!missing(RowSideColors)) {
-        par(mar = c(margins[1], 0, 0, 0.5))
-        image(rbind(1:nr), col = RowSideColors[rowInd], axes = FALSE)
+        if(is.null(nrow(ColSideColors))) {
+          par(mar = c(margins[1], 0, 0, 0.5))
+          image(rbind(1:nr), col = RowSideColors[rowInd], axes = FALSE)
+      }
+      else{
+        for(kk in 1:ncol(RowSideColors)){
+          par(mar = c(margins[1], 0, 0, 0.5))
+          image(rbind(1:nr), col = RowSideColors[rowInd,kk], axes = FALSE)
+          axis(1, 0, labels = colnames(RowSideColors)[kk], las = 2,
+               line = -0.5, tick = 0, cex.axis = cexRow)
+        }
+      } 
     }
     if (!missing(ColSideColors)) {
       if(is.null(nrow(ColSideColors))) {
@@ -400,14 +431,47 @@ function (x,
         image(1:nc, 1:nr, mmat, axes = FALSE, xlab = "", ylab = "", 
             col = na.color, add = TRUE)
     }
-    axis(1, 1:nc, labels = labCol, las = 2, line = -0.5, tick = 0, 
-        cex.axis = cexCol)
+    if (is.null(srtCol) && is.null(colCol)) 
+        axis(1, 1:nc, labels = labCol, las = 2, line = -0.5 + 
+           offsetCol, tick = 0, cex.axis = cexCol, hadj = adjCol[1], 
+         padj = adjCol[2])
+      else {
+        if (is.null(srtCol) || is.numeric(srtCol)) {
+          if (missing(adjCol) || is.null(adjCol)) 
+        adjCol = c(1, NA)
+          xpd.orig <- par("xpd")
+          par(xpd = NA)
+          xpos <- axis(1, 1:nc, labels = rep("", nc), las = 2, 
+                   tick = 0)
+          text(x = xpos, y = par("usr")[3] - (1 + offsetCol) * 
+             strheight("M"), labels = labCol, adj = adjCol, 
+           cex = cexCol, srt = srtCol, col = colCol)
+          print(colCol)
+          par(xpd = xpd.orig)
+        }
+        else warning("Invalid value for srtCol ignored.")
+      }
+      if (is.null(srtRow) && is.null(colRow)) {
+        axis(4, iy, labels = labRow, las = 2, line = -0.5 + offsetRow, 
+         tick = 0, cex.axis = cexRow, hadj = adjRow[1], padj = adjRow[2])
+      }
+      else {
+        if (is.null(srtRow) || is.numeric(srtRow)) {
+          xpd.orig <- par("xpd")
+          par(xpd = NA)
+          ypos <- axis(4, iy, labels = rep("", nr), las = 2, 
+                   line = -0.5, tick = 0)
+          text(x = par("usr")[2] + (1 + offsetRow) * strwidth("M"), 
+           y = ypos, labels = labRow, adj = adjRow, cex = cexRow, 
+           srt = srtRow, col = colRow)
+          par(xpd = xpd.orig)
+        }
+        else warning("Invalid value for srtRow ignored.")
+      }
     if (!is.null(xlab)) 
-        mtext(xlab, side = 1, line = margins[1] - 1.25)
-    axis(4, iy, labels = labRow, las = 2, line = -0.5, tick = 0, 
-        cex.axis = cexRow)
+        mtext(xlab, side = 1, line = margins[1] - 1.25, cex = cexLab)
     if (!is.null(ylab)) 
-        mtext(ylab, side = 4, line = margins[2] - 1.25)
+        mtext(ylab, side = 4, line = margins[2] - 1.25, cex = cexLab)
     if (!missing(add.expr)) 
         eval(substitute(add.expr))
     if (!missing(colsep)) 
@@ -464,53 +528,125 @@ function (x,
     if (!is.null(main)) 
         title(main, cex.main = 1.5 * op[["cex.main"]])
     if (key) {
-        par(mar = c(5, 4, 2, 1), cex = 0.75)
-        if (symkey) {
-            max.raw <- max(abs(x), na.rm = TRUE)
-            min.raw <- -max.raw
-        }
-        else {
-            min.raw <- min(x, na.rm = TRUE)
-            max.raw <- max(x, na.rm = TRUE)
-        }
-        z <- seq(min.raw, max.raw, length = length(col))
-        image(z = matrix(z, ncol = 1), col = col, breaks = breaks, 
-            xaxt = "n", yaxt = "n")
-        par(usr = c(0, 1, 0, 1))
-        lv <- pretty(breaks)
-        xv <- scale01(as.numeric(lv), min.raw, max.raw)
-        axis(1, at = xv, labels = lv)
-        if (scale == "row") 
-            mtext(side = 1, "Row Z-Score", line = 2)
-        else if (scale == "column") 
-            mtext(side = 1, "Column Z-Score", line = 2)
-        else mtext(side = 1, "Value", line = 2)
-        if (density.info == "density") {
-            dens <- density(x, adjust = densadj, na.rm = TRUE)
-            omit <- dens$x < min(breaks) | dens$x > max(breaks)
-            dens$x <- dens$x[-omit]
-            dens$y <- dens$y[-omit]
-            dens$x <- scale01(dens$x, min.raw, max.raw)
-            lines(dens$x, dens$y/max(dens$y) * 0.95, col = denscol, 
-                lwd = 1)
-            axis(2, at = pretty(dens$y)/max(dens$y) * 0.95, pretty(dens$y))
-            title("Color Key\nand Density Plot")
-            par(cex = 0.5)
-            mtext(side = 2, "Density", line = 2)
-        }
-        else if (density.info == "histogram") {
-            h <- hist(x, plot = FALSE, breaks = breaks)
-            hx <- scale01(breaks, min.raw, max.raw)
-            hy <- c(h$counts, h$counts[length(h$counts)])
-            lines(hx, hy/max(hy) * 0.95, lwd = 1, type = "s", 
-                col = denscol)
-            axis(2, at = pretty(hy)/max(hy) * 0.95, pretty(hy))
-            title("Color Key\nand Histogram")
-            par(cex = 0.5)
-            mtext(side = 2, "Count", line = 2)
-        }
-        else title("Color Key")
+    mar <- c(5, 4, 2, 1)
+    if (!is.null(key.xlab) && is.na(key.xlab)) 
+      mar[1] <- 2
+    if (!is.null(key.ylab) && is.na(key.ylab)) 
+      mar[2] <- 2
+    if (!is.null(key.title) && is.na(key.title)) 
+      mar[3] <- 1
+    par(mar = mar, cex = 0.75, mgp = c(2, 1, 0))
+    if (length(key.par) > 0) 
+      do.call(par, key.par)
+    tmpbreaks <- breaks
+    if (symkey) {
+      max.raw <- max(abs(c(x, breaks)), na.rm = TRUE)
+      min.raw <- -max.raw
+      tmpbreaks[1] <- -max(abs(x), na.rm = TRUE)
+      tmpbreaks[length(tmpbreaks)] <- max(abs(x), na.rm = TRUE)
     }
-    else plot.new()
+    else {
+      min.raw <- min.breaks
+      max.raw <- max.breaks
+    }
+    z <- seq(min.raw, max.raw, by = min(diff(breaks)/4))
+    image(z = matrix(z, ncol = 1), col = col, breaks = tmpbreaks, 
+          xaxt = "n", yaxt = "n")
+    par(usr = c(0, 1, 0, 1))
+    if (is.null(key.xtickfun)) {
+      lv <- pretty(breaks)
+      xv <- scale01(as.numeric(lv), min.raw, max.raw)
+      xargs <- list(at = xv, labels = lv)
+    }
+    else {
+      xargs <- key.xtickfun()
+    }
+    xargs$side <- 1
+    do.call(axis, xargs)
+    if (is.null(key.xlab)) {
+      if (scale == "row") 
+        key.xlab <- "Row Z-Score"
+      else if (scale == "column") 
+        key.xlab <- "Column Z-Score"
+      else key.xlab <- "Value"
+    }
+    if (!is.na(key.xlab)) {
+      mtext(side = 1, key.xlab, line = par("mgp")[1], padj = 0.5, 
+            cex = par("cex") * par("cex.lab"))
+    }
+    if (density.info == "density") {
+      dens <- density(x, adjust = densadj, na.rm = TRUE, 
+                      from = min.scale, to = max.scale)
+      omit <- dens$x < min(breaks) | dens$x > max(breaks)
+      dens$x <- dens$x[!omit]
+      dens$y <- dens$y[!omit]
+      dens$x <- scale01(dens$x, min.raw, max.raw)
+      lines(dens$x, dens$y/max(dens$y) * 0.95, col = denscol, 
+            lwd = 1)
+      if (is.null(key.ytickfun)) {
+        yargs <- list(at = pretty(dens$y)/max(dens$y) * 
+                        0.95, labels = pretty(dens$y))
+      }
+      else {
+        yargs <- key.ytickfun()
+      }
+      yargs$side <- 2
+      do.call(axis, yargs)
+      if (is.null(key.title)) 
+        key.title <- "Color Key\nand Density Plot"
+      if (!is.na(key.title)) 
+        title(key.title)
+      par(cex = 0.5)
+      if (is.null(key.ylab)) 
+        key.ylab <- "Density"
+      if (!is.na(key.ylab)) 
+        mtext(side = 2, key.ylab, line = par("mgp")[1], 
+              padj = 0.5, cex = par("cex") * par("cex.lab"))
+    }
+    else if (density.info == "histogram") {
+      h <- hist(x, plot = FALSE, breaks = breaks)
+      hx <- scale01(breaks, min.raw, max.raw)
+      hy <- c(h$counts, h$counts[length(h$counts)])
+      lines(hx, hy/max(hy) * 0.95, lwd = 1, type = "s", 
+            col = denscol)
+      if (is.null(key.ytickfun)) {
+        yargs <- list(at = pretty(hy)/max(hy) * 0.95, 
+                      labels = pretty(hy))
+      }
+      else {
+        yargs <- key.ytickfun()
+      }
+      yargs$side <- 2
+      do.call(axis, yargs)
+      if (is.null(key.title)) 
+        key.title <- "Color Key\nand Histogram"
+      if (!is.na(key.title)) 
+        title(key.title)
+      par(cex = 0.5)
+      if (is.null(key.ylab)) 
+        key.ylab <- "Count"
+      if (!is.na(key.ylab)) 
+        mtext(side = 2, key.ylab, line = par("mgp")[1], 
+              padj = 0.5, cex = par("cex") * par("cex.lab"))
+    }
+    else if (is.null(key.title)) 
+      title("Color Key")
+    if (trace %in% c("both", "column")) {
+      vline.vals <- scale01(vline, min.raw, max.raw)
+      if (!is.null(vline)) {
+        abline(v = vline.vals, col = linecol, lty = 2)
+      }
+    }
+    if (trace %in% c("both", "row")) {
+      hline.vals <- scale01(hline, min.raw, max.raw)
+      if (!is.null(hline)) {
+        abline(v = hline.vals, col = linecol, lty = 2)
+      }
+    }
+  }
+  else plot.new()
     invisible(list(rowInd = rowInd, colInd = colInd))
+      if (!is.null(extrafun)){ 
+        extrafun()
+        }
 }
