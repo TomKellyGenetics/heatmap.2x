@@ -255,7 +255,7 @@ function (x,
     }
     if (inherits(Colv, "dendrogram")) {
         ddc <- Colv
-        colInd <- order.dendrogram(ddc)
+        colInd <- 1:ncol(x)
     }
     else if (identical(Colv, "Rowv")) {
         if (nr != nc) 
