@@ -1,6 +1,6 @@
 Enhanced Heatmap
 ===================
-This is the `master` branch. This branch is only recommended for most colour matrix annotation, additional functionality is possible in the `test` version if needed.
+This is the `master` branch. This branch is recommended for most colour matrix annotation, additional functionality is possible in the `test` version if needed.
 
 
 Altered version of heatmap.2 by Mik Black and Tom Kelly at the University of Otago
