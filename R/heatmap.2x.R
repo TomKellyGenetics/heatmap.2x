@@ -1,8 +1,7 @@
 #' Enhanced Heat Map (with annotation matrices)
 #'
 #' A heat map is a false color image (basically \code{\link[graphics]{image}}(t(x))) with a dendrogram added to the left side and/or to the top. Typically, reordering of the rows and columns according to some set of values (row or column means) within the restrictions imposed by the dendrogram is carried out. This heatmap provides a number of extensions to the standard R \code{\link[stats]{heatmap}} and enhanced \code{\link[gplots]{heatmap.2}} function.
-#' @param love Do you love cats? Defaults to TRUE.
-#' @keywords cats
+#' @keywords heatmap visualization plot graphics
 #' @export
 #' @examples
 #' heatmap.2 (x,
@@ -121,10 +120,11 @@
 #' @param tracecol character string giving the color for "trace" line. Defaults to "cyan".
 #' @param hline,vline,linecol Vector of values within cells where a horizontal or vertical dotted line should be drawn. The color of the line is controlled by linecol. Horizontal lines are only plotted if trace is 'row' or 'both'. Vertical lines are only drawn if trace 'column' or 'both'. hline and vline default to the median of the breaks, linecol defaults to the value of tracecol.
 #' @param margins numeric vector of length 2 containing the margins (see \code{\link[graphics]{par}}(mar= *)) for column and row names, respectively.
-#' @param ColSideColors (optional) character vector of length ncol(x) containing the color names for a horizontal side bar that may be used to annotate the columns of x.
-#' @param RowSideColors (optional) character vector of length nrow(x) containing the color names for a vertical side bar that may be used to annotate the rows of x.
+#' @param ColSideColors (optional) character vector of length ncol(x) containing the color names for a horizontal side bar that may be used to annotate the columns of x. Enabled multiple colorbars combined with rbind: matrix where ncol(ColSideColors)=ncol(x), nrow(ColSideColors) is the number of annotation colour bars, and rownames(ColSideColors) are labels.
+#' @param RowSideColors (optional) character vector of length nrow(x) containing the color names for a vertical side bar that may be used to annotate the rows of x. Enabled multiple colorbars combined with cbind: matrix where ncol(RowSideColors)is the number of annotation colour bars, nrow(RowSideColors)=nrow(x), and colnames(RowSideColors) are labels.
 #' @param cexRow,cexCol positive numbers, used as cex.axis in for the row or column axis labeling. The defaults currently only use number of rows or columns, respectively.
 #' @param labRow,labCol character vectors with row and column labels to use; these default to rownames(x) or colnames(x), respectively.
+#' @param cexLab positive numbers, used as cex.axis in for the row or column annotation bar labeling. Relative to size of row or column labels respectively.
 #' @param srtRow,srtCol angle of row/column labels, in degrees from horizontal
 #' @param adjRow,adjCol 2-element vector giving the (left-right, top-bottom) justification of row/column labels (relative to the text orientation).
 #' @param offsetRow,offsetCol Number of character-width spaces to place between row/column labels and the edge of the plotting region.
@@ -164,7 +164,7 @@ function (x,
           na.color = par("bg"),
           trace = c("column", "row", "both", "none"), tracecol = "cyan",
           hline = median(breaks), vline = median(breaks),
-          linecol = tracecol,\
+          linecol = tracecol,
           margins = c(5, 5),
           ColSideColors, RowSideColors,
           cexRow = 0.2 + 1/log10(nr),
@@ -172,6 +172,7 @@ function (x,
           labRow = NULL, labCol = NULL,
           srtRow = NULL, srtCol = NULL,
           adjRow = c(0, NA), adjCol = c(NA, 0),
+          cexLab = 1,
           #offsetRow = 0.5, offsetCol = 0.5,
           #colRow = NULL, colCol = NULL,
           key = TRUE, keysize = 1.5,
@@ -185,11 +186,11 @@ function (x,
           ...)
 {
     scale01 <- function(x, low = min(x), high = max(x)) {
-      x <- (x - low)/(high - low)
-      x
+        x <- (x - low)/(high - low)
+        x
     }
     scale <- if (symm && missing(scale)) 
-      "none"
+        "none"
     else match.arg(scale)
     dendrogram <- match.arg(dendrogram)
     trace <- match.arg(trace)
@@ -336,31 +337,60 @@ function (x,
     lhei <- lwid <- c(keysize, 4)
     if (!missing(ColSideColors)) {
         if(is.null(nrow(ColSideColors))){
-          lmat <- rbind(lmat[1, ] + 1, c(NA, 1), lmat[2, ] + 1)
-          lhei <- c(lhei[1], 0.2, lhei[2])
+          if(is.vector(ColSideColors)){
+              lmat <- rbind(lmat[1, ] + 1, c(NA, 1), lmat[2, ] + 1)
+              lhei <- c(lhei[1], 0.2, lhei[2])
+          } else {
+              warning("Note that ColSideColors must be a vector or a Matrix")
+          }
         }
         else{
-          lmat <- rbind(lmat[1, ] + nrow(ColSideColors),
-                        t(matrix(as.numeric(unlist(strsplit(paste("NA",1:nrow(ColSideColors))," "))),2,nrow(ColSideColors))),
-                        lmat[2, ] + nrow(ColSideColors))
-          lhei <- c(lhei[1], rep(0.2,nrow(ColSideColors)), lhei[2])
+          if(ncol(ColSideColors)==ncol(x)){
+              lmat <- rbind(lmat[1, ] + nrow(ColSideColors),
+                            t(matrix(as.numeric(unlist(strsplit(paste("NA",1:nrow(ColSideColors))," "))),2,nrow(ColSideColors))),
+                            lmat[2, ] + nrow(ColSideColors))
+              lhei <- c(lhei[1], rep(0.2,nrow(ColSideColors)), lhei[2])
+          } else {
+              warning("Note that if is a matrix ColSideColors it have the same number of **Columns** as the data matric being plotted")          
+          }
         } 
     }
     if (!missing(RowSideColors)) {
-        if (!is.character(RowSideColors) || length(RowSideColors) != 
-            nr) 
-            stop("'RowSideColors' must be a character vector of length nrow(x)")
-        lmat <- cbind(lmat[, 1] + 1, c(rep(NA, nrow(lmat) - 1), 
-            1), lmat[, 2] + 1)
-        lwid <- c(lwid[1], 0.2, lwid[2])
+        if(is.null(ncol(RowSideColors))){
+          if(is.vector(RowSideColors)){
+              lmat <- cbind(lmat[, 1] + 1, c(rep(NA, nrow(lmat) - 1), 1), lmat[, 2] + 1)
+              lwid <- c(lwid[1], 0.2, lwid[2])
+          } else {
+              warning("Note that RowSideColors must be a vector or a Matrix")
+          }
+        }
+        else{
+          if(nrow(RowSideColors)==nrow(x)){
+              lmat<- lmat+ncol(RowSideColors)
+              lmat<-cbind(lmat[,1], rbind(matrix(data=NA, (nrow(lmat)-1), ncol(RowSideColors)), 1:ncol(RowSideColors)),lmat[,2])
+              lwid <- c(lwid[1], rep(0.2,ncol(RowSideColors)), lwid[2])
+          } else {
+              warning("Note that if is a matrix RowSideColors it have the same number of **Rows** as the data matric being plotted")          
+          }
+        } 
     }
     lmat[is.na(lmat)] <- 0
     op <- par(no.readonly = TRUE)
     on.exit(par(op))
     layout(lmat, widths = lwid, heights = lhei, respect = FALSE)
     if (!missing(RowSideColors)) {
-        par(mar = c(margins[1], 0, 0, 0.5))
-        image(rbind(1:nr), col = RowSideColors[rowInd], axes = FALSE)
+        if(is.null(nrow(ColSideColors))) {
+          par(mar = c(margins[1], 0, 0, 0.5))
+          image(rbind(1:nr), col = RowSideColors[rowInd], axes = FALSE)
+      }
+      else{
+        for(kk in 1:ncol(RowSideColors)){
+          par(mar = c(margins[1], 0, 0, 0.5))
+          image(rbind(1:nr), col = RowSideColors[rowInd,kk], axes = FALSE)
+          axis(1, 0, labels = colnames(RowSideColors)[kk], las = 2,
+               line = -0.5, tick = 0, cex.axis = cexRow)
+        }
+      } 
     }
     if (!missing(ColSideColors)) {
       if(is.null(nrow(ColSideColors))) {
@@ -434,9 +464,9 @@ function (x,
         else warning("Invalid value for srtRow ignored.")
       }
     if (!is.null(xlab)) 
-        mtext(xlab, side = 1, line = margins[1] - 1.25)
+        mtext(xlab, side = 1, line = margins[1] - 1.25, cex = cexLab)
     if (!is.null(ylab)) 
-        mtext(ylab, side = 4, line = margins[2] - 1.25)
+        mtext(ylab, side = 4, line = margins[2] - 1.25, cex = cexLab)
     if (!missing(add.expr)) 
         eval(substitute(add.expr))
     if (!missing(colsep)) 
