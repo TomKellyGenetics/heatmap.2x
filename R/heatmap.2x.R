@@ -232,7 +232,7 @@ function (x,
     }
     if (inherits(Rowv, "dendrogram")) {
         ddr <- Rowv
-        rowInd <- order.dendrogram(ddr)
+        rowInd <- 1:nrow(x)
     }
     else if (is.integer(Rowv)) {
         hcr <- hclustfun(distfun(x))
