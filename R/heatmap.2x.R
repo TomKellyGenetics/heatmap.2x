@@ -152,14 +152,14 @@ function (x,
           distfun = dist,
           hclustfun = hclust,
           dendrogram = c("both", "row", "column", "none"),
-          #reorderfun = function(d, w) reorder(d, w),
+          reorderfun = function(d, w) reorder(d, w),
           symm = FALSE,
           scale = c("none", "row", "column"),
           na.rm = TRUE,
           revC = identical(Colv, "Rowv"),
           add.expr,
           breaks,
-          #symbreaks = any(x < 0, na.rm = TRUE) || scale != "none",
+          symbreaks = any(x < 0, na.rm = TRUE) || scale != "none",
           col = "bluered", colsep, rowsep, sepcolor = "white", sepwidth = c(0.05, 0.05),
           cellnote, notecex = 1, notecol = "cyan",
           na.color = par("bg"),
@@ -178,12 +178,11 @@ function (x,
           #colRow = NULL, colCol = NULL,
           key = TRUE, keysize = 1.5, colbarsize = 1,
           density.info = c("histogram", "density", "none"), denscol = tracecol,
-          symkey = min(x < 0, na.rm = TRUE),
-          #symkey = any(x < 0, na.rm = TRUE) || symbreaks,
+          symkey = any(x < 0, na.rm = TRUE) || symbreaks,
           densadj = 0.25,
           #key.title = NULL, key.xlab = NULL, key.ylab = NULL, key.xtickfun = NULL, key.ytickfun = NULL, key.par = list(),
           main = NULL, xlab = NULL, ylab = NULL,
-          #lmat = NULL, lhei = NULL, lwid = NULL, extrafun = NULL,
+          lmat = NULL, lhei = NULL, lwid = NULL, extrafun = NULL,
           ...)
 {
     scale01 <- function(x, low = min(x), high = max(x)) {
@@ -238,7 +237,7 @@ function (x,
     else if (is.integer(Rowv)) {
         hcr <- hclustfun(distfun(x))
         ddr <- as.dendrogram(hcr)
-        ddr <- reorder(ddr, Rowv)
+        ddr <- reorderfun(ddr, Rowv)
         rowInd <- order.dendrogram(ddr)
         if (nr != length(rowInd)) 
             stop("row dendrogram ordering gave index of wrong length")
@@ -247,7 +246,7 @@ function (x,
         Rowv <- rowMeans(x, na.rm = na.rm)
         hcr <- hclustfun(distfun(x))
         ddr <- as.dendrogram(hcr)
-        ddr <- reorder(ddr, Rowv)
+        ddr <- reorderfun(ddr, Rowv)
         rowInd <- order.dendrogram(ddr)
         if (nr != length(rowInd)) 
             stop("row dendrogram ordering gave index of wrong length")
@@ -273,7 +272,7 @@ function (x,
             x
         else t(x)))
         ddc <- as.dendrogram(hcc)
-        ddc <- reorder(ddc, Colv)
+        ddc <- reorderfun(ddc, Colv)
         colInd <- order.dendrogram(ddc)
         if (nc != length(colInd)) 
             stop("column dendrogram ordering gave index of wrong length")
@@ -284,7 +283,7 @@ function (x,
             x
         else t(x)))
         ddc <- as.dendrogram(hcc)
-        ddc <- reorder(ddc, Colv)
+        ddc <- reorderfun(ddc, Colv)
         colInd <- order.dendrogram(ddc)
         if (nc != length(colInd)) 
             stop("column dendrogram ordering gave index of wrong length")
@@ -578,4 +577,7 @@ function (x,
     }
     else plot.new()
     invisible(list(rowInd = rowInd, colInd = colInd))
+      if (!is.null(extrafun)){ 
+        extrafun()
+        }
 }
