@@ -131,6 +131,7 @@
 #' @param colRow,colCol color of row/column labels, either a scalar to set the color of all labels the same, or a vector providing the colors of each label item
 #' @param key logical indicating whether a color-key should be shown.
 #' @param keysize numeric value indicating the size of the key
+#' @param colbarsize numeric value indicating the size of the column bars (relative to default size in \code{\link[gplots]{heatmap.2}})
 #' @param density.info character string indicating whether to superimpose a 'histogram', a 'density' plot, or no plot ('none') on the color-key.
 #' @param denscol character string giving the color for the density display specified by density.info, defaults to the same value as tracecol.
 #' @param symkey Boolean indicating whether the color key should be made symmetric about 0. Defaults to TRUE if the data includes negative values, and to FALSE otherwise.
@@ -175,7 +176,7 @@ function (x,
           cexLab = 1,
           #offsetRow = 0.5, offsetCol = 0.5,
           #colRow = NULL, colCol = NULL,
-          key = TRUE, keysize = 1.5,
+          key = TRUE, keysize = 1.5, colbarsize = 1,
           density.info = c("histogram", "density", "none"), denscol = tracecol,
           symkey = min(x < 0, na.rm = TRUE),
           #symkey = any(x < 0, na.rm = TRUE) || symbreaks,
@@ -335,11 +336,12 @@ function (x,
     x[] <- ifelse(x > max.breaks, max.breaks, x)
     lmat <- rbind(4:3, 2:1)
     lhei <- lwid <- c(keysize, 4)
+    colbarsize <-  colbarsize / 5
     if (!missing(ColSideColors)) {
         if(is.null(nrow(ColSideColors))){
           if(is.vector(ColSideColors)){
               lmat <- rbind(lmat[1, ] + 1, c(NA, 1), lmat[2, ] + 1)
-              lhei <- c(lhei[1], 0.2, lhei[2])
+              lhei <- c(lhei[1], colbarsize, lhei[2])
           } else {
               warning("Note that ColSideColors must be a vector or a Matrix")
           }
@@ -349,7 +351,7 @@ function (x,
               lmat <- rbind(lmat[1, ] + nrow(ColSideColors),
                             t(matrix(as.numeric(unlist(strsplit(paste("NA",1:nrow(ColSideColors))," "))),2,nrow(ColSideColors))),
                             lmat[2, ] + nrow(ColSideColors))
-              lhei <- c(lhei[1], rep(0.2,nrow(ColSideColors)), lhei[2])
+              lhei <- c(lhei[1], rep(colbarsize,nrow(ColSideColors)), lhei[2])
           } else {
               warning("Note that if is a matrix ColSideColors it have the same number of **Columns** as the data matric being plotted")          
           }
@@ -359,7 +361,7 @@ function (x,
         if(is.null(ncol(RowSideColors))){
           if(is.vector(RowSideColors)){
               lmat <- cbind(lmat[, 1] + 1, c(rep(NA, nrow(lmat) - 1), 1), lmat[, 2] + 1)
-              lwid <- c(lwid[1], 0.2, lwid[2])
+              lwid <- c(lwid[1], colbarsize, lwid[2])
           } else {
               warning("Note that RowSideColors must be a vector or a Matrix")
           }
@@ -368,7 +370,7 @@ function (x,
           if(nrow(RowSideColors)==nrow(x)){
               lmat<- lmat+ncol(RowSideColors)
               lmat<-cbind(lmat[,1], rbind(matrix(data=NA, (nrow(lmat)-1), ncol(RowSideColors)), 1:ncol(RowSideColors)),lmat[,2])
-              lwid <- c(lwid[1], rep(0.2,ncol(RowSideColors)), lwid[2])
+              lwid <- c(lwid[1], rep(colbarsize,ncol(RowSideColors)), lwid[2])
           } else {
               warning("Note that if is a matrix RowSideColors it have the same number of **Rows** as the data matric being plotted")          
           }
