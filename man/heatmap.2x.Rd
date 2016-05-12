@@ -6,39 +6,30 @@
 \usage{
 heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
-  "column", "none"), reorderfun = function(d, w) reorder(d, w),
-  symm = FALSE, scale = c("none", "row", "column"), na.rm = TRUE,
-  revC = identical(Colv, "Rowv"), add.expr, breaks, symbreaks = any(x < 0,
-  na.rm = TRUE) || scale != "none", col = "bluered", colsep, rowsep,
-  sepcolor = "white", sepwidth = c(0.05, 0.05), cellnote, notecex = 1,
-  notecol = "cyan", na.color = par("bg"), trace = c("none", "column",
-  "row", "both"), tracecol = "cyan", hline = median(breaks),
-  vline = median(breaks), linecol = tracecol, margins = c(5, 5),
-  ColSideColors, RowSideColors, cexRow = 0.2 + 1/log10(nr), cexCol = 0.2 +
-  1/log10(nc), labRow = NULL, labCol = NULL, srtRow = NULL,
-  srtCol = NULL, adjRow = c(0, NA), adjCol = c(NA, 0), offsetRow = 0.5,
-  offsetCol = 0.5, colRow = NULL, colCol = NULL, key = TRUE,
-  keysize = 1.5, density.info = c("histogram", "density", "none"),
-  denscol = tracecol, symkey = any(x < 0, na.rm = TRUE) || symbreaks,
-  densadj = 0.25, key.title = NULL, key.xlab = NULL, key.ylab = NULL,
-  key.xtickfun = NULL, key.ytickfun = NULL, key.par = list(),
-  main = NULL, xlab = NULL, ylab = NULL, lmat = NULL, lhei = NULL,
-  lwid = NULL, extrafun = NULL, ...)
+  "column", "none"), symm = FALSE, scale = c("none", "row", "column"),
+  na.rm = TRUE, revC = identical(Colv, "Rowv"), add.expr, breaks,
+  col = "bluered", colsep, rowsep, sepcolor = "white", sepwidth = c(0.05,
+  0.05), cellnote, notecex = 1, notecol = "cyan", na.color = par("bg"),
+  trace = c("column", "row", "both", "none"), tracecol = "cyan",
+  hline = median(breaks), vline = median(breaks), linecol = tracecol,
+  margins = c(5, 5), ColSideColors, RowSideColors, cexRow = 0.2 +
+  1/log10(nr), cexCol = 0.2 + 1/log10(nc), labRow = NULL, labCol = NULL,
+  cexLab = 1, key = TRUE, keysize = 1.5, density.info = c("histogram",
+  "density", "none"), denscol = tracecol, symkey = min(x < 0, na.rm = TRUE),
+  densadj = 0.25, main = NULL, xlab = NULL, ylab = NULL, ...)
 }
 \arguments{
 \item{x}{numeric matrix of the values to be plotted.}
 
-\item{Rowv}{determines if and how the row dendrogram should be reordered.    By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a \code{\link[stats]{dendrogram}} dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.}
+\item{Rowv}{determines if and how the row dendrogram should be reordered. By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a \code{\link[stats]{dendrogram}} dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.}
 
-\item{Colv}{determines if and how the column dendrogram should be reordered.    Has the options as the Rowv argument above and additionally when x is a square matrix, Colv="Rowv" means that columns should be treated identically to the rows.}
+\item{Colv}{determines if and how the column dendrogram should be reordered. Has the options as the Rowv argument above and additionally when x is a square matrix, Colv="Rowv" means that columns should be treated identically to the rows.}
 
 \item{distfun}{function used to compute the distance (dissimilarity) between both rows and columns. Defaults to \code{\link[stats]{dist}}.}
 
 \item{hclustfun}{function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to \code{\link[stats]{hclust}}.}
 
 \item{dendrogram}{character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.}
-
-\item{reorderfun}{function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses \code{\link[stats]{stats-package}}stats{reorder.dendrogram}}
 
 \item{symm}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
 
@@ -51,8 +42,6 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 \item{add.expr}{expression that will be evaluated after the call to image. Can be used to add components to the plot.}
 
 \item{breaks}{(optional) Either a numeric vector indicating the splitting points for binning x into colors, or a integer number of break points to be used, in which case the break points will be spaced equally between min(x) and max(x).}
-
-\item{symbreaks}{Boolean indicating whether breaks should be made symmetric about 0. Defaults to TRUE if the data includes negative values, and to FALSE otherwise.}
 
 \item{col}{colors used for the image. Defaults to heat colors (heat.colors).}
 
@@ -76,21 +65,15 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 
 \item{margins}{numeric vector of length 2 containing the margins (see \code{\link[graphics]{par}}(mar= *)) for column and row names, respectively.}
 
-\item{ColSideColors}{(optional) character vector of length ncol(x) containing the color names for a horizontal side bar that may be used to annotate the columns of x.}
+\item{ColSideColors}{(optional) character vector of length ncol(x) containing the color names for a horizontal side bar that may be used to annotate the columns of x. Enabled multiple colorbars combined with rbind: matrix where ncol(ColSideColors)=ncol(x), nrow(ColSideColors) is the number of annotation colour bars, and rownames(ColSideColors) are labels.}
 
-\item{RowSideColors}{(optional) character vector of length nrow(x) containing the color names for a vertical side bar that may be used to annotate the rows of x.}
+\item{RowSideColors}{(optional) character vector of length nrow(x) containing the color names for a vertical side bar that may be used to annotate the rows of x. Enabled multiple colorbars combined with cbind: matrix where ncol(RowSideColors)is the number of annotation colour bars, nrow(RowSideColors)=nrow(x), and colnames(RowSideColors) are labels.}
 
 \item{cexRow, cexCol}{positive numbers, used as cex.axis in for the row or column axis labeling. The defaults currently only use number of rows or columns, respectively.}
 
 \item{labRow, labCol}{character vectors with row and column labels to use; these default to rownames(x) or colnames(x), respectively.}
 
-\item{srtRow, srtCol}{angle of row/column labels, in degrees from horizontal}
-
-\item{adjRow, adjCol}{2-element vector giving the (left-right, top-bottom) justification of row/column labels (relative to the text orientation).}
-
-\item{offsetRow, offsetCol}{Number of character-width spaces to place between row/column labels and the edge of the plotting region.}
-
-\item{colRow, colCol}{color of row/column labels, either a scalar to set the color of all labels the same, or a vector providing the colors of each label item}
+\item{cexLab}{positive numbers, used as cex.axis in for the row or column annotation bar labeling. Relative to size of row or column labels respectively.}
 
 \item{key}{logical indicating whether a color-key should be shown.}
 
@@ -104,6 +87,22 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 
 \item{densadj}{Numeric scaling value for tuning the kernel width when a density plot is drawn on the color key. (See the adjust parameter for the density function for details.) Defaults to 0.25.}
 
+\item{main, xlab, ylab}{main, x- and y-axis titles; defaults to none.}
+
+\item{...}{additional arguments passed on to \code{\link[graphics]{image}}}
+
+\item{reorderfun}{function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses \code{\link[stats]{stats-package}}stats{reorder.dendrogram}}
+
+\item{symbreaks}{Boolean indicating whether breaks should be made symmetric about 0. Defaults to TRUE if the data includes negative values, and to FALSE otherwise.}
+
+\item{srtRow, srtCol}{angle of row/column labels, in degrees from horizontal}
+
+\item{adjRow, adjCol}{2-element vector giving the (left-right, top-bottom) justification of row/column labels (relative to the text orientation).}
+
+\item{offsetRow, offsetCol}{Number of character-width spaces to place between row/column labels and the edge of the plotting region.}
+
+\item{colRow, colCol}{color of row/column labels, either a scalar to set the color of all labels the same, or a vector providing the colors of each label item}
+
 \item{key.title}{main title of the color key. If set to NA no title will be plotted.}
 
 \item{key.xlab}{x axis label of the color key. If set to NA no label will be plotted.}
@@ -116,15 +115,9 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 
 \item{key.par}{graphical parameters for the color key. Named list that can be passed to par.}
 
-\item{main, xlab, ylab}{main, x- and y-axis titles; defaults to none.}
-
 \item{lmat, lhei, lwid}{visual layout: position matrix, column height, column width. See below for details}
 
 \item{extrafun}{A function to be called after all other work. See examples.}
-
-\item{...}{additional arguments passed on to \code{\link[graphics]{image}}}
-
-\item{love}{Do you love cats? Defaults to TRUE.}
 }
 \description{
 A heat map is a false color image (basically \code{\link[graphics]{image}}(t(x))) with a dendrogram added to the left side and/or to the top. Typically, reordering of the rows and columns according to some set of values (row or column means) within the restrictions imposed by the dendrogram is carried out. This heatmap provides a number of extensions to the standard R \code{\link[stats]{heatmap}} and enhanced \code{\link[gplots]{heatmap.2}} function.
@@ -222,5 +215,8 @@ extrafun=NULL,
 )
 
 }
-\keyword{cats}
+\keyword{graphics}
+\keyword{heatmap}
+\keyword{plot}
+\keyword{visualization}
 
