@@ -44,7 +44,7 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 
 \item{breaks}{(optional) Either a numeric vector indicating the splitting points for binning x into colors, or a integer number of break points to be used, in which case the break points will be spaced equally between min(x) and max(x).}
 
-\item{col}{colors used for the image. Defaults to heat colors (heat.colors).}
+\item{col}{colors used for the image. Defaults to heat colors (heat.colors). Color functions (in \link[gplots] or any loaded package) taken as a string or a function (generates colours of length breaks + 1). Pre-generated vectors of colours also permitted, creating the appropriate number of breaks.}
 
 \item{colsep, rowsep, sepcolor}{(optional) vector of integers indicating which columns or rows should be separated from the preceding columns or rows by a narrow space of color sepcolor.}
 
@@ -161,7 +161,7 @@ rowbarmat <- cbind(rowbars1, rowbars2)
 heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbarmat)
 heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbarmat, RowSideColors=rowbarmat)
 
-#' 
+
 heatmap.2 (x,
 
 # dendrogram control
