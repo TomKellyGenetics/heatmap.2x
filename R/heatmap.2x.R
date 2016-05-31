@@ -7,8 +7,6 @@
 #' @export
 #' @examples
 #' 
-#' #Load package
-#' library("heatmap.2x")
 #' #Generate example data
 #' mat <- matrix(rnorm(1000), 50, 20)
 #' #heatmap with recommended settings
@@ -20,7 +18,7 @@
 #' n<- 10
 #' colbar <- rainbow(n)[rep(c(1:n),(ncol(mat)/n))]
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbar)
-#' These should behave just as \code{\link[gplots]{heatmap.2}} 
+#' #These should behave just as heatmap.2
 #' 
 #' #create a row bar
 #' rowbar <- c("red", "blue")[rep(c(1,2),(nrow(mat)/2))]
@@ -28,7 +26,7 @@
 #' n<- 10
 #' rowbar <- rainbow(n)[rep(c(1:n),(nrow(mat)/n))]
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbar)
-#' These should behave just as \code{\link[gplots]{heatmap.2}} 
+#' #These should behave just as heatmap.2
 #' 
 #' #create another color bar
 #' colbars1 <- c("red", "blue")[rep(c(1,2),(ncol(mat)/2))]
