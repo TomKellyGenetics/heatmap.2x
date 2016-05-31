@@ -55,7 +55,7 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 
 \item{symbreaks}{Boolean indicating whether breaks should be made symmetric about 0. Defaults to TRUE if the data includes negative values, and to FALSE otherwise.}
 
-\item{col}{colors used for the image. Defaults to heat colors (heat.colors).}
+\item{col}{colors used for the image. Defaults to heat colors (heat.colors). Color functions (in \link[gplots] or any loaded package) taken as a string or a function (generates colours of length breaks + 1). Pre-generated vectors of colours also permitted, creating the appropriate number of breaks.}
 
 \item{colsep, rowsep, sepcolor}{(optional) vector of integers indicating which columns or rows should be separated from the preceding columns or rows by a narrow space of color sepcolor.}
 
@@ -133,6 +133,43 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 A heat map is a false color image (basically \code{\link[graphics]{image}}(t(x))) with a dendrogram added to the left side and/or to the top. Typically, reordering of the rows and columns according to some set of values (row or column means) within the restrictions imposed by the dendrogram is carried out. This heatmap provides a number of extensions to the standard R \code{\link[stats]{heatmap}} and enhanced \code{\link[gplots]{heatmap.2}} function.
 }
 \examples{
+
+#Load package
+library("heatmap.2x")
+#Generate example data
+mat <- matrix(rnorm(1000), 50, 20)
+#heatmap with recommended settings
+heatmap.2x(mat, scale="none", trace="none", col=bluered(50))
+
+#create color bar
+colbar <- c("red", "blue")[rep(c(1,2),(ncol(mat)/2))]
+heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbar)
+n<- 10
+colbar <- rainbow(n)[rep(c(1:n),(ncol(mat)/n))]
+heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbar)
+These should behave just as \\code{\\link[gplots]{heatmap.2}} 
+
+#create a row bar
+rowbar <- c("red", "blue")[rep(c(1,2),(nrow(mat)/2))]
+heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbar)
+n<- 10
+rowbar <- rainbow(n)[rep(c(1:n),(nrow(mat)/n))]
+heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbar)
+These should behave just as \\code{\\link[gplots]{heatmap.2}} 
+
+#create another color bar
+colbars1 <- c("red", "blue")[rep(c(1,2),(ncol(mat)/2))]
+colbars2 <- c("yellow", "green", "cyan")
+colbarmat <- rbind(colbars1, colbars2)
+heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbarmat)
+
+#create another color bar for rows
+rowbars1 <- c("red", "blue")[rep(c(1,2),(nrow(mat)/2))]
+rowbars2 <- c("yellow", "green", "cyan")
+rowbarmat <- cbind(rowbars1, rowbars2)
+heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbarmat)
+heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbarmat, RowSideColors=rowbarmat)
+
 heatmap.2 (x,
 
 # dendrogram control

@@ -149,7 +149,7 @@
 #' @param add.expr expression that will be evaluated after the call to image. Can be used to add components to the plot.
 #' @param breaks (optional) Either a numeric vector indicating the splitting points for binning x into colors, or a integer number of break points to be used, in which case the break points will be spaced equally between min(x) and max(x).
 #' @param symbreaks Boolean indicating whether breaks should be made symmetric about 0. Defaults to TRUE if the data includes negative values, and to FALSE otherwise.
-#' @param col colors used for the image. Defaults to heat colors (heat.colors).
+#' @param col colors used for the image. Defaults to heat colors (heat.colors). Color functions (in \link[gplots] or any loaded package) taken as a string or a function (generates colours of length breaks + 1). Pre-generated vectors of colours also permitted, creating the appropriate number of breaks.
 #' @param colsep,rowsep,sepcolor (optional) vector of integers indicating which columns or rows should be separated from the preceding columns or rows by a narrow space of color sepcolor.
 #' @param sepwidth (optional) Vector of length 2 giving the width (colsep) or height (rowsep) the separator box drawn by colsep and rowsep as a function of the width (colsep) or height (rowsep) of a cell. Defaults to c(0.05, 0.05)
 #' @param cellnote (optional) matrix of character strings which will be placed within each color cell, e.g. p-value symbols.
@@ -369,10 +369,24 @@ function (x,
     }
     nbr <- length(breaks)
     ncol <- length(breaks) - 1
-    if (class(col) == "function") 
-        col <- col(ncol)
-    else if (is.character(col) && length(col) == 1) 
-        col <- do.call(col, list(ncol))
+    #print(ncol)
+    if (length(col) == 1){
+      if (class(col) == "function"){
+        #print("color accepted as function")
+        colx <- function(n) col(n)
+        coly <- colx(ncol)
+        #} else if (class(get(col)) == "function"){
+        #  print("string matched to known function")
+        #  colorfunction <- get(col)
+        #  coly <- colorfunction(ncol)
+      } else {
+        #print("function call default")
+        coly<- do.call(col, list(ncol))
+      }
+      col <-coly
+    }
+    #print(coly)
+    #print(length(coly))
     min.breaks <- min(breaks)
     max.breaks <- max(breaks)
     x[] <- ifelse(x < min.breaks, min.breaks, x)
