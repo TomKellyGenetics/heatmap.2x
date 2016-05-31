@@ -2,7 +2,7 @@
 #'
 #' A heat map is a false color image (basically \code{\link[graphics]{image}}(t(x))) with a dendrogram added to the left side and/or to the top. Typically, reordering of the rows and columns according to some set of values (row or column means) within the restrictions imposed by the dendrogram is carried out. This heatmap provides a number of extensions to the standard R \code{\link[stats]{heatmap}} and enhanced \code{\link[gplots]{heatmap.2}} function.
 #' @keywords heatmap visualization plot graphics
-#' @imports gplots
+#' @import gplots
 #' @importFrom gtools invalid
 #' @export
 #' @examples
