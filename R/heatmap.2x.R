@@ -6,7 +6,6 @@
 #' @importFrom gtools invalid
 #' @export
 #' @examples
-#' @examples
 #' 
 #' #Load package
 #' library("heatmap.2x")
