@@ -2,6 +2,15 @@ Enhanced Heatmap
 ===================
 This is the `master` branch. This branch is recommended for most colour matrix annotation, additional functionality is possible in the `test` version if needed.
 
+===================
+Please note there is a scaling issue with this branch. There is a `stable` branch to try the added annotation bars:
+```R
+# install.packages("devtools")
+devtools::install_github("TomKellyGenetics/heatmap.2x", ref="stable")
+```
+===================
+
+
 
 Altered version of heatmap.2 by Mik Black and Tom Kelly at the University of Otago
 
