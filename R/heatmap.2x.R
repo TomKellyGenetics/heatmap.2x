@@ -356,7 +356,7 @@ function (x,
     }
     if (missing(breaks) || is.null(breaks) || length(breaks) < 
         1) 
-        if (missing(col)) 
+        if (missing(col) || length(col) == 1) 
             breaks <- 16
         else breaks <- length(col) + 1
     if (length(breaks) == 1) {
