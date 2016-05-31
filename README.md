@@ -3,7 +3,7 @@ Enhanced Heatmap
 This is the `master` branch. This branch is recommended for most colour matrix annotation, additional functionality is possible in the `test` version if needed.
 
 ===================
-Please note there is a scaling issue with this branch. There is a `stable` branch to try the added annotation bars:
+Note there is a `stable` branch to try the added annotation bars with very few changes to `heatmap.2` code from `gplots`:
 ```R
 # install.packages("devtools")
 devtools::install_github("TomKellyGenetics/heatmap.2x", ref="stable")
