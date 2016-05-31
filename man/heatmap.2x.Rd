@@ -55,7 +55,7 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 
 \item{symbreaks}{Boolean indicating whether breaks should be made symmetric about 0. Defaults to TRUE if the data includes negative values, and to FALSE otherwise.}
 
-\item{col}{colors used for the image. Defaults to heat colors (heat.colors).}
+\item{col}{colors used for the image. Defaults to heat colors (heat.colors). Color functions (in \link[gplots] or any loaded package) taken as a string or a function (generates colours of length breaks + 1). Pre-generated vectors of colours also permitted, creating the appropriate number of breaks.}
 
 \item{colsep, rowsep, sepcolor}{(optional) vector of integers indicating which columns or rows should be separated from the preceding columns or rows by a narrow space of color sepcolor.}
 
