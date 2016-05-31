@@ -5,9 +5,12 @@ Authors@R: c(
     person("Tom", "Kelly", email = "tom.kelly@postgrad.otago.ac.nz", role = c("aut", "cre")),
     person("Mik", "Black", email = "mik.black@otago.ac.nz", role = "aut"))
 Description: Modifications to the heatmap.2() function provided by gplots
-Imports:
+Depends:
     gplots (>= 2.17),
     gtools (>= 3.5)
+Imports:
+    gplots,
+    gtools
 License: GPL-2
 NeedsCompilation: No
 LazyData: true
