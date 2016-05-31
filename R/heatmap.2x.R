@@ -43,7 +43,7 @@
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbarmat)
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbarmat, RowSideColors=rowbarmat)
 #' 
-#' #' 
+#' 
 #' heatmap.2 (x,
 #' 
 #' # dendrogram control
@@ -356,7 +356,7 @@ function (x,
     }
     if (missing(breaks) || is.null(breaks) || length(breaks) < 
         1) 
-        if (missing(col)) 
+        if (missing(col) || length(col)==1) 
             breaks <- 16
         else breaks <- length(col) + 1
     if (length(breaks) == 1) {
@@ -365,10 +365,24 @@ function (x,
     }
     nbr <- length(breaks)
     ncol <- length(breaks) - 1
-    if (class(col) == "function") 
-        col <- col(ncol)
-    else if (is.character(col) && length(col) == 1) 
-        col <- do.call(col, list(ncol))
+    #print(ncol)
+    if (length(col) == 1){
+      if (class(col) == "function"){
+        #print("color accepted as function")
+        colx <- function(n) col(n)
+        coly <- colx(ncol)
+      #} else if (class(get(col)) == "function"){
+      #  print("string matched to known function")
+      #  colorfunction <- get(col)
+      #  coly <- colorfunction(ncol)
+      } else {
+        #print("function call default")
+        coly<- do.call(col, list(ncol))
+      }
+      col <-coly
+    }
+    #print(coly)
+    #print(length(coly))
     min.breaks <- min(breaks)
     max.breaks <- max(breaks)
     x[] <- ifelse(x < min.breaks, min.breaks, x)
