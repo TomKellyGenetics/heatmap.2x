@@ -5,48 +5,46 @@
 #' @import gplots
 #' @importFrom gtools invalid
 #' @export
+#' 
 #' @examples
 #' 
-#' #Load package
-#' library("heatmap.2x")
-#' #Generate example data
+#' Generate example data
 #' mat <- matrix(rnorm(1000), 50, 20)
-#' #heatmap with recommended settings
+#' heatmap with recommended settings
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50))
 #' 
-#' #create color bar
+#' create color bar
 #' colbar <- c("red", "blue")[rep(c(1,2),(ncol(mat)/2))]
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbar)
 #' n<- 10
 #' colbar <- rainbow(n)[rep(c(1:n),(ncol(mat)/n))]
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbar)
-#' These should behave just as \code{\link[gplots]{heatmap.2}} 
+#' These should behave just as heatmap.2
 #' 
-#' #create a row bar
+#' create a row bar
 #' rowbar <- c("red", "blue")[rep(c(1,2),(nrow(mat)/2))]
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbar)
 #' n<- 10
 #' rowbar <- rainbow(n)[rep(c(1:n),(nrow(mat)/n))]
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbar)
-#' These should behave just as \code{\link[gplots]{heatmap.2}} 
+#' These should behave just as heatmap.2
 #' 
-#' #create another color bar
+#' create another color bar
 #' colbars1 <- c("red", "blue")[rep(c(1,2),(ncol(mat)/2))]
 #' colbars2 <- c("yellow", "green", "cyan")
 #' colbarmat <- rbind(colbars1, colbars2)
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbarmat)
 #' 
-#' #create another color bar for rows
+#' create another color bar for rows
 #' rowbars1 <- c("red", "blue")[rep(c(1,2),(nrow(mat)/2))]
 #' rowbars2 <- c("yellow", "green", "cyan")
 #' rowbarmat <- cbind(rowbars1, rowbars2)
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbarmat)
 #' heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbarmat, RowSideColors=rowbarmat)
 #' 
-#' 
 #' heatmap.2 (x,
 #' 
-#' # dendrogram control
+#' #dendrogram control
 #' Rowv = TRUE,
 #' Colv=if(symm)"Rowv" else TRUE,
 #' distfun = dist,
@@ -55,41 +53,41 @@
 #' reorderfun = function(d, w) reorder(d, w),
 #' symm = FALSE,
 #' 
-#' # data scaling
+#'  #data scaling
 #' scale = c("none","row", "column"),
 #' na.rm=TRUE,
 #' 
-#' # image plot
+#'  #image plot
 #' revC = identical(Colv, "Rowv"),
 #' add.expr,
 #' 
-#' # mapping data to colors
+#'  #mapping data to colors
 #' breaks,
 #' symbreaks=any(x < 0, na.rm=TRUE) || scale!="none",
 #' 
-#' # colors
+#'  #colors
 #' col="heat.colors",
 #' 
-#' # block sepration
+#'  #block sepration
 #' colsep,
 #' rowsep,
 #' sepcolor="white",
 #' sepwidth=c(0.05,0.05),
 #' 
-#' # cell labeling
+#'  #cell labeling
 #' cellnote,
 #' notecex=1.0,
 #' notecol="cyan",
 #' na.color=par("bg"),
 #' 
-#' # level trace
+#'  #level trace
 #' trace=c("column","row","both","none"),
 #' tracecol="cyan",
 #' hline=median(breaks),
 #' vline=median(breaks),
 #' linecol=tracecol,
 #' 
-#' # Row/Column Labeling
+#'  #Row/Column Labeling
 #' margins = c(5, 5),
 #' ColSideColors,
 #' RowSideColors,
@@ -106,7 +104,7 @@
 #' colRow = NULL,
 #' colCol = NULL,
 #' 
-#' # color key + density info
+#'  #color key + density info
 #' key = TRUE,
 #' keysize = 1.5,
 #' density.info=c("histogram","density","none"),
@@ -120,21 +118,22 @@
 #' key.ytickfun = NULL,
 #' key.par=list(),
 #' 
-#' # plot labels
+#'  #plot labels
 #' main = NULL,
 #' xlab = NULL,
 #' ylab = NULL,
 #' 
-#' # plot layout
+#'  #plot layout
 #' lmat = NULL,
 #' lhei = NULL,
 #' lwid = NULL,
 #' 
-#' # extras
+#'  #extras
 #' extrafun=NULL,
 #' ...
 #' )
 #' 
+
 #' @param x numeric matrix of the values to be plotted.
 #' @param Rowv determines if and how the row dendrogram should be reordered. By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a \code{\link[stats]{dendrogram}} dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.
 #' @param Colv determines if and how the column dendrogram should be reordered. Has the options as the Rowv argument above and additionally when x is a square matrix, Colv="Rowv" means that columns should be treated identically to the rows.
@@ -149,7 +148,7 @@
 #' @param add.expr expression that will be evaluated after the call to image. Can be used to add components to the plot.
 #' @param breaks (optional) Either a numeric vector indicating the splitting points for binning x into colors, or a integer number of break points to be used, in which case the break points will be spaced equally between min(x) and max(x).
 #' @param symbreaks Boolean indicating whether breaks should be made symmetric about 0. Defaults to TRUE if the data includes negative values, and to FALSE otherwise.
-#' @param col colors used for the image. Defaults to heat colors (heat.colors). Color functions (in \link[gplots] or any loaded package) taken as a string or a function (generates colours of length breaks + 1). Pre-generated vectors of colours also permitted, creating the appropriate number of breaks.
+#' @param col colors used for the image. Defaults to heat colors (heat.colors). Color functions (in \href{https://cran.r-project.org/web/packages/gplots/index.html}{gplots} or any loaded package) taken as a string or a function (generates colours of length breaks + 1). Pre-generated vectors of colours also permitted, creating the appropriate number of breaks.
 #' @param colsep,rowsep,sepcolor (optional) vector of integers indicating which columns or rows should be separated from the preceding columns or rows by a narrow space of color sepcolor.
 #' @param sepwidth (optional) Vector of length 2 giving the width (colsep) or height (rowsep) the separator box drawn by colsep and rowsep as a function of the width (colsep) or height (rowsep) of a cell. Defaults to c(0.05, 0.05)
 #' @param cellnote (optional) matrix of character strings which will be placed within each color cell, e.g. p-value symbols.
@@ -433,7 +432,7 @@ function (x,
     on.exit(par(op))
     layout(lmat, widths = lwid, heights = lhei, respect = FALSE)
     if (!missing(RowSideColors)) {
-	if(is.null(nrow(ColSideColors))) {
+      if(is.null(ncol(RowSideColors))) {
         par(mar = c(margins[1], 0, 0, 0.5))
         image(rbind(1:nr), col = RowSideColors[rowInd], axes = FALSE)
       }

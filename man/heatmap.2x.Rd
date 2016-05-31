@@ -44,7 +44,7 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 
 \item{breaks}{(optional) Either a numeric vector indicating the splitting points for binning x into colors, or a integer number of break points to be used, in which case the break points will be spaced equally between min(x) and max(x).}
 
-\item{col}{colors used for the image. Defaults to heat colors (heat.colors). Color functions (in \link[gplots] or any loaded package) taken as a string or a function (generates colours of length breaks + 1). Pre-generated vectors of colours also permitted, creating the appropriate number of breaks.}
+\item{col}{colors used for the image. Defaults to heat colors (heat.colors). Color functions (in \href{https://cran.r-project.org/web/packages/gplots/index.html}{gplots} or any loaded package) taken as a string or a function (generates colours of length breaks + 1). Pre-generated vectors of colours also permitted, creating the appropriate number of breaks.}
 
 \item{colsep, rowsep, sepcolor}{(optional) vector of integers indicating which columns or rows should be separated from the preceding columns or rows by a narrow space of color sepcolor.}
 
@@ -125,46 +125,43 @@ A heat map is a false color image (basically \code{\link[graphics]{image}}(t(x))
 }
 \examples{
 
-#Load package
-library("heatmap.2x")
-#Generate example data
+Generate example data
 mat <- matrix(rnorm(1000), 50, 20)
-#heatmap with recommended settings
+heatmap with recommended settings
 heatmap.2x(mat, scale="none", trace="none", col=bluered(50))
 
-#create color bar
+create color bar
 colbar <- c("red", "blue")[rep(c(1,2),(ncol(mat)/2))]
 heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbar)
 n<- 10
 colbar <- rainbow(n)[rep(c(1:n),(ncol(mat)/n))]
 heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbar)
-These should behave just as \\code{\\link[gplots]{heatmap.2}} 
+These should behave just as heatmap.2
 
-#create a row bar
+create a row bar
 rowbar <- c("red", "blue")[rep(c(1,2),(nrow(mat)/2))]
 heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbar)
 n<- 10
 rowbar <- rainbow(n)[rep(c(1:n),(nrow(mat)/n))]
 heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbar)
-These should behave just as \\code{\\link[gplots]{heatmap.2}} 
+These should behave just as heatmap.2
 
-#create another color bar
+create another color bar
 colbars1 <- c("red", "blue")[rep(c(1,2),(ncol(mat)/2))]
 colbars2 <- c("yellow", "green", "cyan")
 colbarmat <- rbind(colbars1, colbars2)
 heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbarmat)
 
-#create another color bar for rows
+create another color bar for rows
 rowbars1 <- c("red", "blue")[rep(c(1,2),(nrow(mat)/2))]
 rowbars2 <- c("yellow", "green", "cyan")
 rowbarmat <- cbind(rowbars1, rowbars2)
 heatmap.2x(mat, scale="none", trace="none", col=bluered(50), RowSideColors=rowbarmat)
 heatmap.2x(mat, scale="none", trace="none", col=bluered(50), ColSideColors=colbarmat, RowSideColors=rowbarmat)
 
-
 heatmap.2 (x,
 
-# dendrogram control
+#dendrogram control
 Rowv = TRUE,
 Colv=if(symm)"Rowv" else TRUE,
 distfun = dist,
@@ -173,41 +170,41 @@ dendrogram = c("both","row","column","none"),
 reorderfun = function(d, w) reorder(d, w),
 symm = FALSE,
 
-# data scaling
+ #data scaling
 scale = c("none","row", "column"),
 na.rm=TRUE,
 
-# image plot
+ #image plot
 revC = identical(Colv, "Rowv"),
 add.expr,
 
-# mapping data to colors
+ #mapping data to colors
 breaks,
 symbreaks=any(x < 0, na.rm=TRUE) || scale!="none",
 
-# colors
+ #colors
 col="heat.colors",
 
-# block sepration
+ #block sepration
 colsep,
 rowsep,
 sepcolor="white",
 sepwidth=c(0.05,0.05),
 
-# cell labeling
+ #cell labeling
 cellnote,
 notecex=1.0,
 notecol="cyan",
 na.color=par("bg"),
 
-# level trace
+ #level trace
 trace=c("column","row","both","none"),
 tracecol="cyan",
 hline=median(breaks),
 vline=median(breaks),
 linecol=tracecol,
 
-# Row/Column Labeling
+ #Row/Column Labeling
 margins = c(5, 5),
 ColSideColors,
 RowSideColors,
@@ -224,7 +221,7 @@ offsetCol = 0.5,
 colRow = NULL,
 colCol = NULL,
 
-# color key + density info
+ #color key + density info
 key = TRUE,
 keysize = 1.5,
 density.info=c("histogram","density","none"),
@@ -238,17 +235,17 @@ key.xtickfun = NULL,
 key.ytickfun = NULL,
 key.par=list(),
 
-# plot labels
+ #plot labels
 main = NULL,
 xlab = NULL,
 ylab = NULL,
 
-# plot layout
+ #plot layout
 lmat = NULL,
 lhei = NULL,
 lwid = NULL,
 
-# extras
+ #extras
 extrafun=NULL,
 ...
 )
