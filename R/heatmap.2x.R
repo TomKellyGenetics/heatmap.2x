@@ -438,7 +438,7 @@ function (x,
     on.exit(par(op))
     layout(lmat, widths = lwid, heights = lhei, respect = FALSE)
     if (!missing(RowSideColors)) {
-        if(is.null(nrow(ColSideColors))) {
+        if(is.null(ncol(RowSideColors))) {
           par(mar = c(margins[1], 0, 0, 0.5))
           image(rbind(1:nr), col = RowSideColors[rowInd], axes = FALSE)
       }
