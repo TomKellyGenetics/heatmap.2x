@@ -12,3 +12,5 @@ heatmap-mik-tk.R
 heatmap-2.R
 heatmap-d3.R
 headers.R
+inst/doc
+tests/testthat/Rplots.pdf

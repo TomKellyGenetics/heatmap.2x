@@ -1,0 +1,67 @@
+---
+title: "Annotating Heatmaps in R"
+author: "Tom Kelly"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{Annotated Heatmaps}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo=FALSE, message=FALSE}
+library("slipt")
+if(!(require("multtest"))){
+  source("http://bioconductor.org/biocLite.R")
+  biocLite("multtest")
+  library("multtest")
+}
+```
+
+```{r, message=FALSE, echo=FALSE}
+data(golub, package = "multtest")
+```
+
+
+```{r}
+library("heatmap.2x")
+#heatmap with recommended settings
+heatmap.2x(golub, scale="none", trace="none", col=bluered(50))
+```
+
+```{r}
+#create color bar
+colbar <- c("lightblue", "palevioletred")[golub.cl+1]
+heatmap.2x(golub, scale="none", trace="none", col=bluered(50), ColSideColors=colbar)
+n<- 10
+colbar <- rainbow(n)[rep(c(1:n),(ncol(golub)/n))]
+heatmap.2x(golub, scale="none", trace="none", col=bluered(50), ColSideColors=colbar)
+#These should behave just as heatmap.2
+```
+
+```{r}
+#create a row bar
+rowbar <- c("red", "blue")[rep(c(1,2),(nrow(golub)/2))]
+heatmap.2x(golub, scale="none", trace="none", col=bluered(50), RowSideColors=rowbar)
+n<- 10
+rowbar <- rainbow(n)[rep(c(1:n),(nrow(golub)/n))]
+heatmap.2x(golub, scale="none", trace="none", col=bluered(50), RowSideColors=rowbar)
+#These should behave just as heatmap.2
+```
+
+```{r}
+#create another color bar
+colbars1 <- c("lightblue", "palevioletred")[golub.cl+1]
+colbars2 <- c("yellow", "green", "cyan")
+colbargolub <- rbind(colbars1, colbars2)
+heatmap.2x(golub, scale="none", trace="none", col=bluered(50), ColSideColors=colbargolub)
+```
+
+```{r}
+#create another color bar for rows
+rowbars1 <- c("red", "blue")
+rowbars2 <- c("yellow", "green", "cyan")[rep(1:3,(nrow(golub)/3))]
+rowbargolub <- cbind(rowbars1, rowbars2)
+heatmap.2x(golub, scale="none", trace="none", col=bluered(50), RowSideColors=rowbargolub)
+heatmap.2x(golub, scale="none", trace="none", col=bluered(50), ColSideColors=colbargolub, RowSideColors=rowbargolub)
+```
