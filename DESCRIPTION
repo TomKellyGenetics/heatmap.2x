@@ -15,4 +15,7 @@ LazyData: true
 RoxygenNote: 5.0.1.9000
 URL: https://github.com/TomKellyGenetics/heatmap.2x
 BugReports: https://github.com/TomKellyGenetics/heatmap.2x/issues
-Suggests: testthat
+Suggests: testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
