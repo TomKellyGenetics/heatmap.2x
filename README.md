@@ -45,6 +45,11 @@ Citation of original package: Gregory R. Warnes, Ben Bolker, Lodewijk Bonebakker
 
 # Running
 
+See the relevant vignettes for more details:
+
+https://rawgit.com/TomKellyGenetics/heatmap.2x/master/vignettes/heatmap_annotation.html
+https://rawgit.com/TomKellyGenetics/heatmap.2x/master/vignettes/heatmap_golub.html
+
 heatmap.2x works in much the same manner as heatmap.2
 
 * `heatmap.2x::heatmap.2x()` generates a heatmap, takes the same arguments as `gplots::heatmap.2()` to plot a heatmap with colour bar annotation (optional) using ColSideCols and RowSideCols vectors.
