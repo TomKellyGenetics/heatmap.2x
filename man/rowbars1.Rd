@@ -12,4 +12,3 @@ rowbars1
 A colorbar example for rows
 }
 \keyword{datasets}
-

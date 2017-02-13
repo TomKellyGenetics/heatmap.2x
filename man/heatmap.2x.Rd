@@ -6,8 +6,9 @@
 \usage{
 heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
-  "column", "none"), symm = FALSE, scale = c("none", "row", "column"),
-  na.rm = TRUE, revC = identical(Colv, "Rowv"), add.expr, breaks,
+  "column", "none"), symm = FALSE, nodeParRow = NULL, nodeParCol = NULL,
+  edgeParRow = NULL, edgeParCol = NULL, scale = c("none", "row",
+  "column"), na.rm = TRUE, revC = identical(Colv, "Rowv"), add.expr, breaks,
   col = bluered(50), colsep, rowsep, sepcolor = "white",
   sepwidth = c(0.05, 0.05), cellnote, notecex = 1, notecol = "cyan",
   na.color = par("bg"), trace = c("column", "row", "both", "none"),
@@ -33,6 +34,14 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 \item{dendrogram}{character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.}
 
 \item{symm}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
+
+\item{nodeParRow}{Row dendrogram plotting (see \code{\link[stats]{plot.dendrogram}}: a list of parameters to use for the nodes (see ?\code{\link{points}}). Default value is NULL. The list may contain components named pch, cex, col, xpd, and/or bg each of which can have length two for specifying separate attributes for inner nodes and leaves.}
+
+\item{nodeParCol}{Column dendrogram plotting: same inputs as nodeParRow}
+
+\item{edgeParRow}{Row dendrogram plotting (see \code{\link[stats]{plot.dendrogram}}: a list of parameters to use for the edge segments (see ?segments). The list may contain components named col, lty and lwd (for the segments). As with nodePar, each can have length two for differentiating leaves and inner nodes.}
+
+\item{edgeParCol}{Column dendrogram plotting: same inputs as edgeParRow}
 
 \item{scale}{character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".}
 
@@ -170,6 +179,12 @@ dendrogram = c("both","row","column","none"),
 reorderfun = function(d, w) reorder(d, w),
 symm = FALSE,
 
+#pass params to plot.dendrogram
+nodeParRow = NULL,
+nodeParCol = NULL,
+edgeParRow = NULL,
+edgeParCol = NULL,
+
  #data scaling
 scale = c("none","row", "column"),
 na.rm=TRUE,
@@ -255,4 +270,3 @@ extrafun=NULL,
 \keyword{heatmap}
 \keyword{plot}
 \keyword{visualization}
-
