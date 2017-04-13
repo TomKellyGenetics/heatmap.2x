@@ -12,3 +12,4 @@ colbarmat
 Example color annotation for columns heatmap demonstration
 }
 \keyword{datasets}
+

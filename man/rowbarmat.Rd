@@ -12,3 +12,4 @@ rowbarmat
 Example color annotation for rows heatmap demonstration
 }
 \keyword{datasets}
+

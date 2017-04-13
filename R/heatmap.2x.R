@@ -415,7 +415,7 @@ function (x,
                             lmat[2, ] + nrow(ColSideColors))
               lhei <- c(lhei[1], rep(0.2,nrow(ColSideColors)), lhei[2])
           } else {
-              warning("Note that if is a matrix ColSideColors it have the same number of **Columns** as the data matric being plotted")
+              warning("Note that if is a matrix ColSideColors it have the same number of **Columns** as the data matrix being plotted")
           }
         }
     }
@@ -434,7 +434,7 @@ function (x,
               lmat<-cbind(lmat[,1], rbind(matrix(data=NA, (nrow(lmat)-1), ncol(RowSideColors)), 1:ncol(RowSideColors)),lmat[,2])
               lwid <- c(lwid[1], rep(0.2,ncol(RowSideColors)), lwid[2])
           } else {
-              warning("Note that if is a matrix RowSideColors it have the same number of **Rows** as the data matric being plotted")
+              warning("Note that if is a matrix RowSideColors it have the same number of **Rows** as the data matrix being plotted")
           }
         }
     }
