@@ -1,3 +1,5 @@
+[![Travis-CI Build Status](https://travis-ci.org/TomKellyGenetics/heatmap.2x.svg?branch=master)](https://travis-ci.org/TomKellyGenetics/heatmap.2x)
+
 Enhanced Heatmap
 ===================
 This is the `master` branch. This branch is recommended for most colour matrix annotation, additional functionality is possible in the `test` version if needed.
