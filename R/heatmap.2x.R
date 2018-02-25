@@ -194,6 +194,9 @@
 #' @param lmat,lhei,lwid visual layout: position matrix, column height, column width. See below for details
 #' @param extrafun A function to be called after all other work. See examples.
 #' @param ... additional arguments passed on to \code{\link[graphics]{image}}
+#' @importFrom graphics abline axis hist image layout lines mtext par plot plot.new rect text title
+#' @importFrom stats as.dendrogram density dist hclust median order.dendrogram reorder sd
+#' @export
 heatmap.2x<-
 function (x,
           Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
