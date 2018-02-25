@@ -10,7 +10,6 @@ vignette: >
 ---
 
 ```{r, echo=FALSE, message=FALSE}
-library("slipt")
 if(!(require("multtest"))){
   source("http://bioconductor.org/biocLite.R")
   biocLite("multtest")
@@ -19,7 +18,8 @@ if(!(require("multtest"))){
 ```
 
 ```{r, message=FALSE, echo=FALSE}
-data(golub, package = "multtest")
+library("multtest")
+data(golub)
 ```
 
 
