@@ -12,4 +12,3 @@ mat
 A randomly generated numeric matrix for heatmap con continous scale
 }
 \keyword{datasets}
-

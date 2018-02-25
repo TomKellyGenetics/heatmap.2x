@@ -12,4 +12,3 @@ n
 A default number of breaks to use
 }
 \keyword{datasets}
-

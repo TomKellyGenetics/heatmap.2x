@@ -270,4 +270,3 @@ extrafun=NULL,
 \keyword{heatmap}
 \keyword{plot}
 \keyword{visualization}
-

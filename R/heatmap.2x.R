@@ -134,9 +134,9 @@
 #' lhei = NULL,
 #' lwid = NULL,
 #'
-#'  #extras
+#' #extras
 #' extrafun=NULL,
-#' ...
+#' #...
 #' )
 #'
 
