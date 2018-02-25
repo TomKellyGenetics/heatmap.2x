@@ -1,4 +1,5 @@
 [![Travis-CI Build Status](https://travis-ci.org/TomKellyGenetics/heatmap.2x.svg?branch=master)](https://travis-ci.org/TomKellyGenetics/heatmap.2x)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/TomKellyGenetics/heatmap.2x?branch=master&svg=true)](https://ci.appveyor.com/project/TomKellyGenetics/heatmap.2x)
 
 Enhanced Heatmap
 ===================
