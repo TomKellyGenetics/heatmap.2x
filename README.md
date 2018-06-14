@@ -1,5 +1,7 @@
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/heatmap.2x)](https://cran.r-project.org/package=heatmap.2x)
 [![Travis-CI Build Status](https://travis-ci.org/TomKellyGenetics/heatmap.2x.svg?branch=master)](https://travis-ci.org/TomKellyGenetics/heatmap.2x)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/TomKellyGenetics/heatmap.2x?branch=master&svg=true)](https://ci.appveyor.com/project/TomKellyGenetics/heatmap.2x)
+[![Project Status: Inactive – The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](http://www.repostatus.org/badges/latest/inactive.svg)](http://www.repostatus.org/#inactive)
 
 Enhanced Heatmap
 ===================
