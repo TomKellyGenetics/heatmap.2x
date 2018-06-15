@@ -1,5 +1,6 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
-sudo: false
 cache: packages
+before_install:
+  - Rscript -e 'biocLite(c("multtest"));if (!all(c("multtest") %in% installed.packages())) { q(status = 1, save = "no")}'
