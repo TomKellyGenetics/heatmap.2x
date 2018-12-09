@@ -7,25 +7,25 @@
 heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
   "column", "none"), reorderfun = function(d, w) reorder(d, w),
-  symm = FALSE, nodeParRow = NULL, nodeParCol = NULL, edgeParRow = NULL,
-  edgeParCol = NULL, scale = c("none", "row", "column"), na.rm = TRUE,
-  revC = identical(Colv, "Rowv"), add.expr, breaks = NULL,
-  symbreaks = any(x < 0, na.rm = TRUE) || scale != "none",
-  col = bluered(50), colsep, rowsep, sepcolor = "white",
+  symm = FALSE, nodeParRow = NULL, nodeParCol = NULL,
+  edgeParRow = NULL, edgeParCol = NULL, scale = c("none", "row",
+  "column"), na.rm = TRUE, revC = identical(Colv, "Rowv"), add.expr,
+  breaks = NULL, symbreaks = any(x < 0, na.rm = TRUE) || scale !=
+  "none", col = bluered(50), colsep, rowsep, sepcolor = "white",
   sepwidth = c(0.05, 0.05), cellnote, notecex = 1, notecol = "cyan",
   na.color = par("bg"), trace = c("column", "row", "both", "none"),
   tracecol = "cyan", hline = median(breaks), vline = median(breaks),
   linecol = tracecol, margins = c(5, 5), ColSideColors, RowSideColors,
-  cexRow = 0.2 + 1/log10(nr), cexCol = 0.2 + 1/log10(nc), labRow = NULL,
-  labCol = NULL, cexLab = 1, srtRow = NULL, srtCol = NULL,
-  adjRow = c(0, NA), adjCol = c(NA, 0), offsetRow = 0.5,
-  offsetCol = 0.5, colRow = NULL, colCol = NULL, key = TRUE,
-  keysize = 1.5, density.info = c("histogram", "density", "none"),
-  denscol = tracecol, symkey = any(x < 0, na.rm = TRUE) || symbreaks,
-  densadj = 0.25, key.title = NULL, key.xlab = NULL, key.ylab = NULL,
-  key.xtickfun = NULL, key.ytickfun = NULL, key.par = list(),
-  main = NULL, xlab = NULL, ylab = NULL, lmat = NULL, lhei = NULL,
-  lwid = NULL, extrafun = NULL, ...)
+  cexRow = 0.2 + 1/log10(nr), cexCol = 0.2 + 1/log10(nc),
+  labRow = NULL, labCol = NULL, cexLab = 1, srtRow = NULL,
+  srtCol = NULL, adjRow = c(0, NA), adjCol = c(NA, 0),
+  offsetRow = 0.5, offsetCol = 0.5, colRow = NULL, colCol = NULL,
+  key = TRUE, keysize = 1.5, density.info = c("histogram", "density",
+  "none"), denscol = tracecol, symkey = any(x < 0, na.rm = TRUE) ||
+  symbreaks, densadj = 0.25, key.title = NULL, key.xlab = NULL,
+  key.ylab = NULL, key.xtickfun = NULL, key.ytickfun = NULL,
+  key.par = list(), main = NULL, xlab = NULL, ylab = NULL,
+  lmat = NULL, lhei = NULL, lwid = NULL, extrafun = NULL, ...)
 }
 \arguments{
 \item{x}{numeric matrix of the values to be plotted.}

@@ -241,6 +241,7 @@ function (x,
         x <- (x - low)/(high - low)
         x
     }
+    retval <- list()
     scale <- if (symm && missing(scale))
         "none"
     else match.arg(scale)
@@ -343,6 +344,9 @@ function (x,
     else {
         colInd <- 1:nc
     }
+    retval$rowInd <- rowInd
+    retval$colInd <- colInd
+    retval$call <- match.call()
     x <- x[rowInd, colInd]
     x.unscaled <- x
     cellnote <- cellnote[rowInd, colInd]
@@ -357,13 +361,15 @@ function (x,
         else colnames(x)
     else labCol <- labCol[colInd]
     if (scale == "row") {
+        retval$rowMeans <- rm <- rowMeans(x, na.rm = na.rm)
         x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
-        sx <- apply(x, 1, sd, na.rm = na.rm)
+        retval$rowSDs <- sx <- apply(x, 1, sd, na.rm = na.rm)
         x <- sweep(x, 1, sx, "/")
     }
     else if (scale == "column") {
+        retval$colMeans <- rm <- colMeans(x, na.rm = na.rm)
         x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
-        sx <- apply(x, 2, sd, na.rm = na.rm)
+        retval$colSDs <- sx <- apply(x, 2, sd, na.rm = na.rm)
         x <- sweep(x, 2, sx, "/")
     }
     if (is.null(breaks) || is.null(breaks) || length(breaks) <
@@ -492,6 +498,13 @@ function (x,
         image(1:nc, 1:nr, mmat, axes = FALSE, xlab = "", ylab = "",
             col = na.color, add = TRUE)
     }
+    retval$carpet <- x
+    if (exists("ddr"))
+      retval$rowDendrogram <- ddr
+    if (exists("ddc"))
+      retval$colDendrogram <- ddc
+    retval$breaks <- breaks
+    retval$col <- col
     axis(1, 1:nc, labels = labCol, las = 2, line = -0.5, tick = 0,
         cex.axis = cexCol)
     if (!is.null(xlab))
@@ -516,6 +529,7 @@ function (x,
     max.scale <- max(breaks)
     x.scaled <- scale01(t(x), min.scale, max.scale)
     if (trace %in% c("both", "column")) {
+        retval$vline <- vline
         for (i in colInd) {
             if (!is.null(vline)) {
                 vline.vals <- scale01(vline, min.scale, max.scale)
@@ -529,6 +543,7 @@ function (x,
         }
     }
     if (trace %in% c("both", "row")) {
+        retval$hline <- hline
         for (i in rowInd) {
             if (!is.null(hline)) {
                 hline.vals <- scale01(hline, min.scale, max.scale)
@@ -578,31 +593,83 @@ function (x,
             mtext(side = 1, "Column Z-Score", line = 2)
         else mtext(side = 1, "Value", line = 2)
         if (density.info == "density") {
-            dens <- density(x, adjust = densadj, na.rm = TRUE)
-            omit <- dens$x < min(breaks) | dens$x > max(breaks)
-            dens$x <- dens$x[-omit]
-            dens$y <- dens$y[-omit]
-            dens$x <- scale01(dens$x, min.raw, max.raw)
-            lines(dens$x, dens$y/max(dens$y) * 0.95, col = denscol,
+          dens <- density(x, adjust = densadj, na.rm = TRUE,
+                          from = min.scale, to = max.scale)
+          omit <- dens$x < min(breaks) | dens$x > max(breaks)
+          dens$x <- dens$x[!omit]
+          dens$y <- dens$y[!omit]
+          dens$x <- scale01(dens$x, min.raw, max.raw)
+          lines(dens$x, dens$y/max(dens$y) * 0.95, col = denscol,
                 lwd = 1)
-            axis(2, at = pretty(dens$y)/max(dens$y) * 0.95, pretty(dens$y))
-            title("Color Key\nand Density Plot")
-            par(cex = 0.5)
-            mtext(side = 2, "Density", line = 2)
+          if (is.null(key.ytickfun)) {
+            yargs <- list(at = pretty(dens$y)/max(dens$y) *
+                            0.95, labels = pretty(dens$y))
+          }
+          else {
+            yargs <- key.ytickfun()
+          }
+          yargs$side <- 2
+          do.call(axis, yargs)
+          if (is.null(key.title))
+            key.title <- "Color Key\nand Density Plot"
+          if (!is.na(key.title))
+            title(key.title)
+          par(cex = 0.5)
+          if (is.null(key.ylab))
+            key.ylab <- "Density"
+          if (!is.na(key.ylab))
+            mtext(side = 2, key.ylab, line = par("mgp")[1],
+                  padj = 0.5, cex = par("cex") * par("cex.lab"))
         }
         else if (density.info == "histogram") {
-            h <- hist(x, plot = FALSE, breaks = breaks)
-            hx <- scale01(breaks, min.raw, max.raw)
-            hy <- c(h$counts, h$counts[length(h$counts)])
-            lines(hx, hy/max(hy) * 0.95, lwd = 1, type = "s",
+          h <- hist(x, plot = FALSE, breaks = breaks)
+          hx <- scale01(breaks, min.raw, max.raw)
+          hy <- c(h$counts, h$counts[length(h$counts)])
+          lines(hx, hy/max(hy) * 0.95, lwd = 1, type = "s",
                 col = denscol)
-            axis(2, at = pretty(hy)/max(hy) * 0.95, pretty(hy))
-            title("Color Key\nand Histogram")
-            par(cex = 0.5)
-            mtext(side = 2, "Count", line = 2)
+          if (is.null(key.ytickfun)) {
+            yargs <- list(at = pretty(hy)/max(hy) * 0.95,
+                          labels = pretty(hy))
+          }
+          else {
+            yargs <- key.ytickfun()
+          }
+          yargs$side <- 2
+          do.call(axis, yargs)
+          if (is.null(key.title))
+            key.title <- "Color Key\nand Histogram"
+          if (!is.na(key.title))
+            title(key.title)
+          par(cex = 0.5)
+          if (is.null(key.ylab))
+            key.ylab <- "Count"
+          if (!is.na(key.ylab))
+            mtext(side = 2, key.ylab, line = par("mgp")[1],
+                  padj = 0.5, cex = par("cex") * par("cex.lab"))
         }
-        else title("Color Key")
+        else if (is.null(key.title))
+          title("Color Key")
+        if (trace %in% c("both", "column")) {
+          vline.vals <- scale01(vline, min.raw, max.raw)
+          if (!is.null(vline)) {
+            abline(v = vline.vals, col = linecol, lty = 2)
+          }
+        }
+        if (trace %in% c("both", "row")) {
+          hline.vals <- scale01(hline, min.raw, max.raw)
+          if (!is.null(hline)) {
+            abline(v = hline.vals, col = linecol, lty = 2)
+          }
+        }
     }
-    else plot.new()
-    invisible(list(rowInd = rowInd, colInd = colInd))
+    else {
+      par(mar = c(0, 0, 0, 0))
+      plot.new()
+    }
+    retval$colorTable <- data.frame(low = retval$breaks[-length(retval$breaks)],
+                                    high = retval$breaks[-1], color = retval$col)
+    retval$layout <- list(lmat = lmat, lhei = lhei, lwid = lwid)
+    if (!is.null(extrafun))
+      extrafun()
+    invisible(retval)
 }
