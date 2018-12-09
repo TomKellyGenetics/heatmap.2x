@@ -555,7 +555,7 @@ function (x,
     if (!is.null(xlab))
         mtext(xlab, side = 1, line = margins[1] - 1.25 - offsetLabRow, cex = cexLab)
     if (!is.null(ylab))
-        mtext(ylab, side = 4, line = margins[2] - 1.25 - offsetLabRow, cex = cexLab)
+        mtext(ylab, side = 4, line = margins[2] - 1.25 - offsetLabCol, cex = cexLab)
     if (!missing(add.expr))
         eval(substitute(add.expr))
     if (!missing(colsep))
