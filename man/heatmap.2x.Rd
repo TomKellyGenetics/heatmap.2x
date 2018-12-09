@@ -19,10 +19,11 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   cexRow = 0.2 + 1/log10(nr), cexCol = 0.2 + 1/log10(nc),
   labRow = NULL, labCol = NULL, cexLab = 1, srtRow = NULL,
   srtCol = NULL, adjRow = c(0, NA), adjCol = c(NA, 0),
-  offsetRow = 0.5, offsetCol = 0.5, colRow = NULL, colCol = NULL,
-  key = TRUE, keysize = 1.5, density.info = c("histogram", "density",
-  "none"), denscol = tracecol, symkey = any(x < 0, na.rm = TRUE) ||
-  symbreaks, densadj = 0.25, key.title = NULL, key.xlab = NULL,
+  offsetRow = 0.5, offsetCol = 0.5, offsetLabRow = 0,
+  offsetLabCol = 0, colRow = NULL, colCol = NULL, key = TRUE,
+  keysize = 1.5, density.info = c("histogram", "density", "none"),
+  denscol = tracecol, symkey = any(x < 0, na.rm = TRUE) || symbreaks,
+  densadj = 0.25, key.title = NULL, key.xlab = NULL,
   key.ylab = NULL, key.xtickfun = NULL, key.ytickfun = NULL,
   key.par = list(), main = NULL, xlab = NULL, ylab = NULL,
   lmat = NULL, lhei = NULL, lwid = NULL, extrafun = NULL, ...)
@@ -101,6 +102,8 @@ heatmap.2x(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 \item{adjRow, adjCol}{2-element vector giving the (left-right, top-bottom) justification of row/column labels (relative to the text orientation).}
 
 \item{offsetRow, offsetCol}{Number of character-width spaces to place between row/column labels and the edge of the plotting region.}
+
+\item{offsetLabRow, offsetLabCol}{Number of character-width spaces to place between row/column axis labels and the margins.}
 
 \item{colRow, colCol}{color of row/column labels, either a scalar to set the color of all labels the same, or a vector providing the colors of each label item}
 
@@ -202,6 +205,8 @@ adjRow = c(0,NA),
 adjCol = c(NA,0),
 offsetRow = 0.5,
 offsetCol = 0.5,
+offsetLabRow = 0,
+offsetLabCol = 0,
 colRow = NULL,
 colCol = NULL,
 

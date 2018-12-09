@@ -35,6 +35,7 @@
 #' @param srtRow,srtCol angle of row/column labels, in degrees from horizontal
 #' @param adjRow,adjCol 2-element vector giving the (left-right, top-bottom) justification of row/column labels (relative to the text orientation).
 #' @param offsetRow,offsetCol Number of character-width spaces to place between row/column labels and the edge of the plotting region.
+#' @param offsetLabRow,offsetLabCol Number of character-width spaces to place between row/column axis labels and the margins.
 #' @param colRow,colCol color of row/column labels, either a scalar to set the color of all labels the same, or a vector providing the colors of each label item
 #' @param key logical indicating whether a color-key should be shown.
 #' @param keysize numeric value indicating the size of the key
@@ -165,6 +166,8 @@
 #' adjCol = c(NA,0),
 #' offsetRow = 0.5,
 #' offsetCol = 0.5,
+#' offsetLabRow = 0,
+#' offsetLabCol = 0,
 #' colRow = NULL,
 #' colCol = NULL,
 #'
@@ -227,6 +230,7 @@ function (x,
           srtRow = NULL, srtCol = NULL,
           adjRow = c(0, NA), adjCol = c(NA, 0),
           offsetRow = 0.5, offsetCol = 0.5,
+          offsetLabRow = 0, offsetLabCol = 0,
           colRow = NULL, colCol = NULL,
           key = TRUE, keysize = 1.5,
           density.info = c("histogram", "density", "none"), denscol = tracecol,
@@ -505,14 +509,53 @@ function (x,
       retval$colDendrogram <- ddc
     retval$breaks <- breaks
     retval$col <- col
-    axis(1, 1:nc, labels = labCol, las = 2, line = -0.5, tick = 0,
-        cex.axis = cexCol)
+    if (!invalid(na.color) & any(is.na(x))) {
+      mmat <- ifelse(is.na(x), 1, NA)
+      image(1:nc, 1:nr, mmat, axes = FALSE, xlab = "", ylab = "",
+            col = na.color, add = TRUE)
+    }
+    if (is.null(srtCol) && is.null(colCol))
+      axis(1, 1:nc, labels = labCol, las = 2, line = -0.5 +
+             offsetCol, tick = 0, cex.axis = cexCol, hadj = adjCol[1],
+           padj = adjCol[2])
+    else {
+      if (is.null(srtCol) || is.numeric(srtCol)) {
+        if (missing(adjCol) || is.null(adjCol))
+          adjCol = c(1, NA)
+        if (is.null(srtCol))
+          srtCol <- 90
+        xpd.orig <- par("xpd")
+        par(xpd = NA)
+        xpos <- axis(1, 1:nc, labels = rep("", nc), las = 2,
+                     tick = 0)
+        text(x = xpos, y = par("usr")[3] - (1 + offsetCol) *
+               strheight("M"), labels = labCol, adj = adjCol,
+             cex = cexCol, srt = srtCol, col = colCol)
+        par(xpd = xpd.orig)
+      }
+      else warning("Invalid value for srtCol ignored.")
+    }
+    if (is.null(srtRow) && is.null(colRow)) {
+      axis(4, iy, labels = labRow, las = 2, line = -0.5 + offsetRow,
+           tick = 0, cex.axis = cexRow, hadj = adjRow[1], padj = adjRow[2])
+    }
+    else {
+      if (is.null(srtRow) || is.numeric(srtRow)) {
+        xpd.orig <- par("xpd")
+        par(xpd = NA)
+        ypos <- axis(4, iy, labels = rep("", nr), las = 2,
+                     line = -0.5, tick = 0)
+        text(x = par("usr")[2] + (1 + offsetRow) * strwidth("M"),
+             y = ypos, labels = labRow, adj = adjRow, cex = cexRow,
+             srt = srtRow, col = colRow)
+        par(xpd = xpd.orig)
+      }
+      else warning("Invalid value for srtRow ignored.")
+    }
     if (!is.null(xlab))
-        mtext(xlab, side = 1, line = margins[1] - 1.25, cex = cexLab)
-    axis(4, iy, labels = labRow, las = 2, line = -0.5, tick = 0,
-        cex.axis = cexRow)
+        mtext(xlab, side = 1, line = margins[1] - 1.25 - offsetLabRow, cex = cexLab)
     if (!is.null(ylab))
-        mtext(ylab, side = 4, line = margins[2] - 1.25, cex = cexLab)
+        mtext(ylab, side = 4, line = margins[2] - 1.25 - offsetLabRow, cex = cexLab)
     if (!missing(add.expr))
         eval(substitute(add.expr))
     if (!missing(colsep))
