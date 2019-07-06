@@ -3,7 +3,7 @@
 language: R
 cache: packages
 before_install:
-  - Rscript -e 'source("https://bioconductor.org/biocLite.R");biocLite(c("multtest", "survival", "MASS"), ask = FALSE)'
+  - Rscript -e ' install.packages("biocManager");BiocManager::install(c("multtest", "survival", "MASS"), ask = FALSE)'
 r_packages:
   - covr
 
